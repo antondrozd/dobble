@@ -3,9 +3,9 @@ export interface ICard {
   tokens: number[];
 }
 
-export type TokensPerCardAmount = 4 | 8 | 12 | 14;
+export type TokensPerCard = 4 | 8 | 12 | 14 | 18;
 
-const generateTokenMatrix = (rowLenth: TokensPerCardAmount) => {
+const generateTokenMatrix = (rowLenth: TokensPerCard) => {
   const matrix: number[][] = [];
 
   const n = rowLenth - 1;
@@ -35,5 +35,5 @@ const generateTokenMatrix = (rowLenth: TokensPerCardAmount) => {
   return matrix;
 };
 
-export const generateCards = (tokensPerCard: TokensPerCardAmount): ICard[] =>
+export const generateCards = (tokensPerCard: TokensPerCard): ICard[] =>
   generateTokenMatrix(tokensPerCard).map((tokens, i) => ({ id: i, tokens }));

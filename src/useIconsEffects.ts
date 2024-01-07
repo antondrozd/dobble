@@ -21,7 +21,5 @@ export const useIconsEffects = (
     [tokens]
   );
 
-  console.log({ rotations, scales });
-
   return { rotations, scales };
 };
