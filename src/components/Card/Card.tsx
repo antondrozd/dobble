@@ -61,8 +61,8 @@ const MUICardStyled = styled(MUICard)<{
     left: 50%;
     width: ${({ $size }) => `calc(${$size} / 7)`} !important;
     height: ${({ $size }) => `calc(${$size} / 7)`} !important;
-    transform: ${({ $rotations }) =>
-      `translate(-50%, -50%) rotate(${$rotations[0]})`};
+    transform: ${({ $rotations, $scales }) =>
+      `translate(-50%, -50%) scale(${$scales[0]}) rotate(${$rotations[0]})`};
 
     ${({ $clickable }) =>
       $clickable &&
