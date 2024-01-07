@@ -1,18 +1,27 @@
+import random from "random";
 import { Card as MUICard, css, styled } from "@mui/material";
 
 import icons from "./icons";
 import { useIconsEffects } from "../../useIconsEffects";
+import { cards } from "../../cards";
 
-const ICONS_PACK_SHIFT = 1000;
+const iconsPackShift = random.int(0, icons.length - cards.length - 1);
 
 type Props = {
   tokens: number[];
   size?: string;
   onTokenClick?: (token: number) => void;
   answer?: number;
+  className?: string;
 };
 
-const Card = ({ tokens, size = "300px", onTokenClick, answer }: Props) => {
+const Card = ({
+  tokens,
+  size = "300px",
+  onTokenClick,
+  answer,
+  className,
+}: Props) => {
   const { rotations, scales } = useIconsEffects(tokens);
 
   return (
@@ -21,10 +30,11 @@ const Card = ({ tokens, size = "300px", onTokenClick, answer }: Props) => {
       $clickable={!!onTokenClick}
       $rotations={rotations}
       $scales={scales}
+      className={className}
     >
       <>
         {tokens.map((token) => {
-          const Icon = icons[token + ICONS_PACK_SHIFT];
+          const Icon = icons[token + iconsPackShift];
 
           return (
             <Icon
@@ -43,7 +53,10 @@ const Card = ({ tokens, size = "300px", onTokenClick, answer }: Props) => {
   );
 };
 
-const MUICardStyled = styled(MUICard)<{
+const MUICardStyled = styled(MUICard, {
+  shouldForwardProp: (prop: string) =>
+    !["$size", "$clickable", "$rotations", "$scales"].includes(prop),
+})<{
   $size: string;
   $clickable: boolean;
   $rotations: string[];

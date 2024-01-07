@@ -1,5 +1,6 @@
 import random from "random";
 import { useMemo } from "react";
+import { getRandomRotation } from "./utils";
 
 const effectsCache = new WeakMap();
 const defaultScalingParams = { min: 0.7, max: 1.7 };
@@ -13,7 +14,6 @@ export const useIconsEffects = (
   tokens: number[],
   scalingParams = defaultScalingParams
 ): IEffects => {
-  const getRandomRotation = () => `${random.int(1, 360)}deg`;
   const getRandomScale = () =>
     random.float(scalingParams.min, scalingParams.max);
 

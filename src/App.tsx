@@ -1,26 +1,19 @@
 import { useEffect, useLayoutEffect, useState, useTransition } from "react";
-import random from "random";
 import { Chip, Switch, styled } from "@mui/material";
-import { shuffle } from "lodash";
 import * as R from "ramda";
 
 import Card from "./components/Card";
-import { type TokensPerCard, generateCards, type ICard } from "./utils";
+import {
+  createRandomCardSelector,
+  getRandomRotation,
+  type ICard,
+} from "./utils";
 
 import "./App.css";
+import { WIN_SCORE } from "./constants";
+import { cards } from "./cards";
 
-const TOKENS_PER_CARD: TokensPerCard = 8;
-const WIN_SCORE = 15;
-
-const cards = generateCards(TOKENS_PER_CARD);
-const getRandomCard = ({ excludeIDs }: { excludeIDs: ICard["id"][] }) =>
-  R.over(
-    // @ts-ignore
-    R.lensProp<ICard>("tokens"),
-    shuffle,
-    R.reject(R.where({ id: R.includes(excludeIDs) }), cards)[random.int(0, 56)]
-  );
-
+const getRandomCard = createRandomCardSelector(cards);
 const getCardSize = () => `${window.innerHeight * 0.3}px`;
 
 function App() {
@@ -124,7 +117,7 @@ function App() {
   return (
     <Wrapper $windowHeight={window.innerHeight}>
       <PlayerPaneRotated>
-        <Card
+        <Player1Card
           size={cardSize}
           tokens={player1Card.tokens}
           onTokenClick={handleToken1Click}
@@ -137,10 +130,10 @@ function App() {
         />
       </PlayerPaneRotated>
 
-      <Card size={cardSize} tokens={commonCard.tokens} />
+      <CommonCard size={cardSize} tokens={commonCard.tokens} />
 
       <PlayerPane>
-        <Card
+        <Player2Card
           size={cardSize}
           tokens={player2Card.tokens}
           onTokenClick={handleToken2Click}
@@ -172,6 +165,18 @@ const PlayerPane = styled("div")`
 
 const PlayerPaneRotated = styled(PlayerPane)`
   transform: rotate(180deg);
+`;
+
+const Player1Card = styled(Card)`
+  transform: rotate(${getRandomRotation()});
+`;
+
+const Player2Card = styled(Card)`
+  transform: rotate(${getRandomRotation()});
+`;
+
+const CommonCard = styled(Card)`
+  transform: rotate(${getRandomRotation()});
 `;
 
 export default App;

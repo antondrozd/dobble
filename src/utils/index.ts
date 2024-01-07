@@ -1,3 +1,6 @@
+import * as R from "ramda";
+import random from "random";
+
 export interface ICard {
   id: number;
   tokens: number[];
@@ -37,3 +40,12 @@ const generateTokenMatrix = (rowLenth: TokensPerCard) => {
 
 export const generateCards = (tokensPerCard: TokensPerCard): ICard[] =>
   generateTokenMatrix(tokensPerCard).map((tokens, i) => ({ id: i, tokens }));
+
+export const createRandomCardSelector =
+  (cards: ICard[]) =>
+  ({ excludeIDs }: { excludeIDs: ICard["id"][] }) =>
+    R.reject(R.where({ id: R.includes(R.__, excludeIDs) }), cards)[
+      random.int(0, cards.length - excludeIDs.length - 1)
+    ];
+
+export const getRandomRotation = () => `${random.int(1, 360)}deg`;
