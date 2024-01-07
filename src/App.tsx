@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState, useTransition } from "react";
 import random from "random";
 import { Chip, Switch, styled } from "@mui/material";
 import { shuffle } from "lodash";
@@ -25,6 +25,7 @@ const getCardSize = () => `${window.innerHeight * 0.3}px`;
 
 function App() {
   const [cardSize, setCardSize] = useState(getCardSize());
+  const [, startTransition] = useTransition();
 
   const [player1Card, setPlayer1Card] = useState<ICard | null>(null);
   const [player2Card, setPlayer2Card] = useState<ICard | null>(null);
@@ -76,7 +77,9 @@ function App() {
 
   useLayoutEffect(() => {
     const handleResize = () => {
-      setCardSize(getCardSize());
+      startTransition(() => {
+        setCardSize(getCardSize());
+      });
     };
 
     window.addEventListener("resize", handleResize);
@@ -120,7 +123,7 @@ function App() {
 
   return (
     <Wrapper $windowHeight={window.innerHeight}>
-      <Player1Pane>
+      <PlayerPaneRotated>
         <Card
           size={cardSize}
           tokens={player1Card.tokens}
@@ -132,11 +135,11 @@ function App() {
           checked={answer1Highlighted}
           onChange={() => setAnswer1Highlighted(R.not)}
         />
-      </Player1Pane>
+      </PlayerPaneRotated>
 
       <Card size={cardSize} tokens={commonCard.tokens} />
 
-      <Player2Pane>
+      <PlayerPane>
         <Card
           size={cardSize}
           tokens={player2Card.tokens}
@@ -148,7 +151,7 @@ function App() {
           checked={answer2Highlighted}
           onChange={() => setAnswer2Highlighted(R.not)}
         />
-      </Player2Pane>
+      </PlayerPane>
     </Wrapper>
   );
 }
@@ -167,9 +170,8 @@ const PlayerPane = styled("div")`
   display: flex;
 `;
 
-const Player1Pane = styled(PlayerPane)`
+const PlayerPaneRotated = styled(PlayerPane)`
   transform: rotate(180deg);
 `;
-const Player2Pane = styled(PlayerPane)``;
 
 export default App;
