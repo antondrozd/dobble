@@ -7,7 +7,7 @@ export const useIconsEffects = (
   tokens: number[],
   scalingParams = defaultScalingParams
 ) => {
-  const getRandomRotation = () => `${random.int(0, 360)}deg`;
+  const getRandomRotation = () => `${random.int(1, 360)}deg`;
   const getRandomScale = () =>
     random.float(scalingParams.min, scalingParams.max);
 
