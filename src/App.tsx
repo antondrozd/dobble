@@ -157,6 +157,7 @@ const Wrapper = styled("main")<{ $windowHeight: number }>`
   height: ${({ $windowHeight }) => `${$windowHeight}px`};
   padding: ${({ $windowHeight }) => `${$windowHeight * 0.02}px`};
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const PlayerPane = styled("div")`
