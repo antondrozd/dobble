@@ -19,7 +19,8 @@
     "ramda": "^0.29.1",
     "random": "^4.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.202",
@@ -34,6 +35,7 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
+    "vite-plugin-checker": "^0.6.2",
     "vitest": "^1.1.3"
   }
 }
