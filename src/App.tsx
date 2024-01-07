@@ -168,17 +168,17 @@ const Wrapper = styled("main")<{ $windowHeight: number }>`
 
 const PlayerPane = styled("div")`
   display: flex;
+  gap: ${({ theme }) => theme.spacing(2)};
 `;
 
 const PlayerControls = styled("div")`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
 `;
 
 const HintIcon = styled(EmojiObjectsTwoTone)`
-  margin-top: ${({ theme }) => theme.spacing(2)};
   font-size: 3rem;
   color: #ffea00;
 
