@@ -50,7 +50,6 @@ const MUICardStyled = styled(MUICard)<{
   $scales: number[];
 }>`
   position: relative;
-  margin: 20px;
   width: ${({ $size }) => $size};
   height: ${({ $size }) => $size};
   border-radius: 100%;

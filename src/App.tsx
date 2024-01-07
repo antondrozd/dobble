@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import random from "random";
 import { Chip, Switch, styled } from "@mui/material";
 import { shuffle } from "lodash";
@@ -10,7 +10,7 @@ import { type TokensPerCard, generateCards, type ICard } from "./utils";
 import "./App.css";
 
 const TOKENS_PER_CARD: TokensPerCard = 8;
-const WIN_SCORE = 10;
+const WIN_SCORE = 15;
 
 const cards = generateCards(TOKENS_PER_CARD);
 const getRandomCard = ({ excludeIDs }: { excludeIDs: ICard["id"][] }) =>
@@ -21,7 +21,11 @@ const getRandomCard = ({ excludeIDs }: { excludeIDs: ICard["id"][] }) =>
     R.reject(R.where({ id: R.includes(excludeIDs) }), cards)[random.int(0, 56)]
   );
 
+const getCardSize = () => `${window.innerHeight * 0.3}px`;
+
 function App() {
+  const [cardSize, setCardSize] = useState(getCardSize());
+
   const [player1Card, setPlayer1Card] = useState<ICard | null>(null);
   const [player2Card, setPlayer2Card] = useState<ICard | null>(null);
   const [commonCard, setCommonCard] = useState<ICard | null>(null);
@@ -70,6 +74,18 @@ function App() {
     }
   };
 
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      setCardSize(getCardSize());
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     const first = getRandomCard({ excludeIDs: [] });
     const second = getRandomCard({ excludeIDs: [first.id] });
@@ -82,15 +98,19 @@ function App() {
 
   useEffect(() => {
     if (player1Score === WIN_SCORE) {
-      alert("Player 1 wins!");
+      alert("Player 1 won!");
       setPlayer1Score(0);
       setPlayer2Score(0);
+      setAnswer1Highlighted(false);
+      setAnswer2Highlighted(false);
     }
 
     if (player2Score === WIN_SCORE) {
-      alert("Player 2 wins!");
+      alert("Player 2 won!");
       setPlayer1Score(0);
       setPlayer2Score(0);
+      setAnswer1Highlighted(false);
+      setAnswer2Highlighted(false);
     }
   }, [player1Score, player2Score]);
 
@@ -99,39 +119,53 @@ function App() {
   }
 
   return (
-    <>
+    <Wrapper $windowHeight={window.innerHeight}>
       <Player1Pane>
         <Card
+          size={cardSize}
           tokens={player1Card.tokens}
           onTokenClick={handleToken1Click}
           answer={answer1Highlighted ? commonToken1 : undefined}
         />
-        <Chip label={`Score: ${player1Score}`} color="success" />
+        <Chip label={`Score: ${player1Score}`} color="success" sx={{ mt: 2 }} />
         <Switch
           checked={answer1Highlighted}
           onChange={() => setAnswer1Highlighted(R.not)}
         />
       </Player1Pane>
 
-      <Card tokens={commonCard.tokens} />
+      <Card size={cardSize} tokens={commonCard.tokens} />
 
       <Player2Pane>
         <Card
+          size={cardSize}
           tokens={player2Card.tokens}
           onTokenClick={handleToken2Click}
           answer={answer2Highlighted ? commonToken2 : undefined}
         />
-        <Chip label={`Score: ${player2Score}`} color="success" />
+        <Chip label={`Score: ${player2Score}`} color="success" sx={{ mt: 2 }} />
         <Switch
           checked={answer2Highlighted}
           onChange={() => setAnswer2Highlighted(R.not)}
         />
       </Player2Pane>
-    </>
+    </Wrapper>
   );
 }
 
-const PlayerPane = styled("div")``;
+const Wrapper = styled("main")<{ $windowHeight: number }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: ${({ $windowHeight }) => `${$windowHeight}px`};
+  padding: ${({ $windowHeight }) => `${$windowHeight * 0.02}px`};
+  box-sizing: border-box;
+`;
+
+const PlayerPane = styled("div")`
+  display: flex;
+`;
 
 const Player1Pane = styled(PlayerPane)`
   transform: rotate(180deg);
