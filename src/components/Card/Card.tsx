@@ -1,5 +1,5 @@
 import random from "random";
-import { Card as MUICard, css, styled } from "@mui/material";
+import { Card as MUICard, css, styled, keyframes } from "@mui/material";
 
 import icons from "./icons";
 import { useIconsEffects } from "../../useIconsEffects";
@@ -7,19 +7,28 @@ import { cards } from "../../cards";
 
 const iconsPackShift = random.int(0, icons.length - cards.length - 1);
 
-type Props = {
+type BaseProps = {
   tokens: number[];
   size?: string;
   onTokenClick?: (token: number) => void;
-  answer?: number;
   className?: string;
 };
+
+type HintProps =
+  | { answer?: never; onAnswerRevealed?: never }
+  | {
+      answer?: number;
+      onAnswerRevealed: () => void;
+    };
+
+type Props = BaseProps & HintProps;
 
 const Card = ({
   tokens,
   size = "300px",
   onTokenClick,
   answer,
+  onAnswerRevealed,
   className,
 }: Props) => {
   const { rotations, scales } = useIconsEffects(tokens);
@@ -40,11 +49,8 @@ const Card = ({
             <Icon
               key={token}
               onClick={() => onTokenClick?.(token)}
-              sx={
-                answer === token
-                  ? { border: "3px solid green", borderRadius: "50%" }
-                  : {}
-              }
+              onAnimationEnd={answer === token ? onAnswerRevealed : undefined}
+              sx={answer === token ? { animation: `${flash} 0.5s` } : {}}
             />
           );
         })}
@@ -52,6 +58,16 @@ const Card = ({
     </MUICardStyled>
   );
 };
+
+const flash = keyframes`
+    50% {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+`;
 
 const MUICardStyled = styled(MUICard, {
   shouldForwardProp: (prop: string) =>

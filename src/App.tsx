@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useState, useTransition } from "react";
-import { Chip, Switch, styled } from "@mui/material";
+import { Chip, styled } from "@mui/material";
+import { EmojiObjectsTwoTone } from "@mui/icons-material";
+
 import * as R from "ramda";
 
 import Card from "./components/Card";
@@ -28,8 +30,8 @@ function App() {
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
 
-  const [answer1Highlighted, setAnswer1Highlighted] = useState(false);
-  const [answer2Highlighted, setAnswer2Highlighted] = useState(false);
+  const [revealPlayer1Answer, setRevealPlayer1Answer] = useState(false);
+  const [revealPlayer2Answer, setRevealPlayer2Answer] = useState(false);
 
   const commonToken1: number | undefined = R.intersection(
     player1Card?.tokens ?? [],
@@ -97,16 +99,12 @@ function App() {
       alert("Player 1 won!");
       setPlayer1Score(0);
       setPlayer2Score(0);
-      setAnswer1Highlighted(false);
-      setAnswer2Highlighted(false);
     }
 
     if (player2Score === WIN_SCORE) {
       alert("Player 2 won!");
       setPlayer1Score(0);
       setPlayer2Score(0);
-      setAnswer1Highlighted(false);
-      setAnswer2Highlighted(false);
     }
   }, [player1Score, player2Score]);
 
@@ -121,13 +119,17 @@ function App() {
           size={cardSize}
           tokens={player1Card.tokens}
           onTokenClick={handleToken1Click}
-          answer={answer1Highlighted ? commonToken1 : undefined}
+          answer={revealPlayer1Answer ? commonToken1 : undefined}
+          onAnswerRevealed={() => setRevealPlayer1Answer(false)}
         />
-        <Chip label={`Score: ${player1Score}`} color="success" sx={{ mt: 2 }} />
-        <Switch
-          checked={answer1Highlighted}
-          onChange={() => setAnswer1Highlighted(R.not)}
-        />
+        <PlayerControls>
+          <Chip
+            label={`Score: ${player1Score}`}
+            color="success"
+            sx={{ mt: 2 }}
+          />
+          <HintIcon onClick={() => setRevealPlayer1Answer(true)} />
+        </PlayerControls>
       </PlayerPaneRotated>
 
       <CommonCard size={cardSize} tokens={commonCard.tokens} />
@@ -137,13 +139,17 @@ function App() {
           size={cardSize}
           tokens={player2Card.tokens}
           onTokenClick={handleToken2Click}
-          answer={answer2Highlighted ? commonToken2 : undefined}
+          answer={revealPlayer2Answer ? commonToken2 : undefined}
+          onAnswerRevealed={() => setRevealPlayer2Answer(false)}
         />
-        <Chip label={`Score: ${player2Score}`} color="success" sx={{ mt: 2 }} />
-        <Switch
-          checked={answer2Highlighted}
-          onChange={() => setAnswer2Highlighted(R.not)}
-        />
+        <PlayerControls>
+          <Chip
+            label={`Score: ${player2Score}`}
+            color="success"
+            sx={{ mt: 2 }}
+          />
+          <HintIcon onClick={() => setRevealPlayer2Answer(true)} />
+        </PlayerControls>
       </PlayerPane>
     </Wrapper>
   );
@@ -162,6 +168,27 @@ const Wrapper = styled("main")<{ $windowHeight: number }>`
 
 const PlayerPane = styled("div")`
   display: flex;
+`;
+
+const PlayerControls = styled("div")`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const HintIcon = styled(EmojiObjectsTwoTone)`
+  margin-top: ${({ theme }) => theme.spacing(2)};
+  font-size: 3rem;
+  color: #ffea00;
+
+  @media (hover: hover) {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
 `;
 
 const PlayerPaneRotated = styled(PlayerPane)`
