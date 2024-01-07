@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useState, useTransition } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Chip, styled } from "@mui/material";
 import { EmojiObjectsTwoTone } from "@mui/icons-material";
-
+import { throttle } from "lodash";
 import * as R from "ramda";
 
 import Card from "./components/Card";
@@ -20,7 +20,6 @@ const getCardSize = () => `${window.innerHeight * 0.3}px`;
 
 function App() {
   const [cardSize, setCardSize] = useState(getCardSize());
-  const [, startTransition] = useTransition();
 
   const [player1Card, setPlayer1Card] = useState<ICard | null>(null);
   const [player2Card, setPlayer2Card] = useState<ICard | null>(null);
@@ -71,11 +70,7 @@ function App() {
   };
 
   useLayoutEffect(() => {
-    const handleResize = () => {
-      startTransition(() => {
-        setCardSize(getCardSize());
-      });
-    };
+    const handleResize = throttle(() => setCardSize(getCardSize()), 200);
 
     window.addEventListener("resize", handleResize);
 
