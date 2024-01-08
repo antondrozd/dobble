@@ -20,6 +20,7 @@ const twoToneIcons = R.values(
 );
 
 const themedTwoToneIcons = twoToneIcons.map((Icon, i) => {
+  // TODO: with this approach all the icons may theoretically have the same color
   const color = colors[random.int(0, colors.length - 1)];
 
   return {
