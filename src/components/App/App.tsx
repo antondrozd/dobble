@@ -1,11 +1,10 @@
 import { styled } from "@mui/material";
 
-import Card from "./components/Card";
-import { getRandomRotation } from "./utils";
-
-// import { WIN_SCORE } from "./constants";
-import PlayerPane from "./components/PlayerPane";
-import { useGame } from "./hooks";
+import Card from "@/components/Card";
+import PlayerPane from "@/components/PlayerPane";
+import { getRandomRotation } from "@/utils";
+// import { WIN_SCORE } from "@/constants";
+import { useGame } from "@/hooks";
 
 function App() {
   const { commonCard, players } = useGame();

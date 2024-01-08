@@ -1,4 +1,4 @@
-import { TOKENS_PER_CARD } from "./constants";
+import { TOKENS_PER_CARD } from "@/constants";
 
 export type Token = number;
 

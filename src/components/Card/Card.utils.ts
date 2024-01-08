@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
-import { TokensPerCard } from "../../cards";
+
+import { TokensPerCard } from "@/cards";
 
 export const createIconTransformComputer =
   (iconsAmount: TokensPerCard) =>

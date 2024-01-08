@@ -1,15 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { Card as MUICard, css, styled, keyframes } from "@mui/material";
 
-import { getIconsPack } from "./icons";
-import { useIconsTransform } from "../../hooks";
-import { type Token } from "../../cards";
-import { TOKENS_PER_CARD } from "../../constants";
-import { getTotalTokensAmount } from "../../utils";
+import { useIconsTransform } from "@/hooks";
+import { type Token } from "@/cards";
+import { TOKENS_PER_CARD } from "@/constants";
+import { getTotalTokensAmount } from "@/utils";
+
 import { createIconTransformComputer } from "./Card.utils";
+import { getIconsPack } from "./icons";
 
 const icons = getIconsPack(getTotalTokensAmount(TOKENS_PER_CARD));
-const computeIconTransform = createIconTransformComputer(8);
+const computeIconTransform = createIconTransformComputer(TOKENS_PER_CARD);
 
 type BaseProps = {
   tokens: Token[];

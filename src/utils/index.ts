@@ -1,6 +1,7 @@
 import * as R from "ramda";
 import random from "random";
-import { type TokensPerCard } from "../cards";
+
+import { type TokensPerCard } from "@/cards";
 
 export const getTotalTokensAmount = (tokensPerCard: TokensPerCard) =>
   tokensPerCard ** 2 - tokensPerCard + 1;

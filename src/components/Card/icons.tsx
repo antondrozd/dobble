@@ -3,7 +3,7 @@ import { type SvgIconProps } from "@mui/material";
 import * as R from "ramda";
 import random from "random";
 
-import { getRandomItemsSet } from "../../utils";
+import { getRandomItemsSet } from "@/utils";
 
 const colors = [
   "action",

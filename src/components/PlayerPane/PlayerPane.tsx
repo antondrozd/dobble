@@ -2,10 +2,10 @@ import { Chip, styled } from "@mui/material";
 import { EmojiObjectsTwoTone } from "@mui/icons-material";
 import * as R from "ramda";
 
-import Card from "../Card";
-import { getRandomRotation, getRandomItemsSet } from "../../utils";
-import { type IPlayer, useGame } from "../../hooks";
-import { type ICard, type Token, cards } from "../../cards";
+import Card from "@/components/Card";
+import { getRandomRotation, getRandomItemsSet } from "@/utils";
+import { type IPlayer, useGame } from "@/hooks";
+import { type ICard, type Token, cards } from "@/cards";
 
 type Props = {
   playerID: IPlayer["id"];
