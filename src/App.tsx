@@ -1,41 +1,22 @@
-import { useEffect } from "react";
 import { styled } from "@mui/material";
-import * as R from "ramda";
 
 import Card from "./components/Card";
-import { createRandomCardSelector, getRandomRotation } from "./utils";
+import { getRandomRotation } from "./utils";
 
 import "./App.css";
 // import { WIN_SCORE } from "./constants";
-import { cards } from "./cards";
 import PlayerPane from "./components/PlayerPane";
 import { useCardSize, useGame } from "./hooks";
 
-const getRandomCard = createRandomCardSelector(cards);
-
 function App() {
   const cardSize = useCardSize();
-  const { players, drawCard, commonCard, setCommonCard } = useGame();
-
-  useEffect(() => {
-    const first = getRandomCard({ excludeIDs: [] });
-    const second = getRandomCard({ excludeIDs: [first.id] });
-    const common = getRandomCard({ excludeIDs: [first.id, second.id] });
-
-    drawCard(1, first);
-    drawCard(2, second);
-    setCommonCard(common);
-  }, []);
-
-  if (R.any((player) => R.isNil(player.card), players) || !commonCard) {
-    return null;
-  }
+  const { commonCard, players } = useGame();
 
   return (
     <Wrapper $windowHeight={window.innerHeight}>
-      <PlayerPaneRotated cardSize={cardSize} playerID={1} />
+      <PlayerPaneRotated cardSize={cardSize} playerID={players[0].id} />
       <CommonCard size={cardSize} tokens={commonCard.tokens} />
-      <PlayerPane cardSize={cardSize} playerID={2} />
+      <PlayerPane cardSize={cardSize} playerID={players[1].id} />
     </Wrapper>
   );
 }

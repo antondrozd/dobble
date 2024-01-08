@@ -1,15 +1,17 @@
 import * as R from "ramda";
 import random from "random";
 
+export type Token = number;
+
 export interface ICard {
   id: number;
-  tokens: number[];
+  tokens: Token[];
 }
 
 export type TokensPerCard = 4 | 8 | 12 | 14 | 18;
 
 const generateTokenMatrix = (rowLenth: TokensPerCard) => {
-  const matrix: number[][] = [];
+  const matrix: Token[][] = [];
 
   const n = rowLenth - 1;
 

@@ -1,20 +1,23 @@
 import { create } from "zustand";
 import * as R from "ramda";
 
-import { type ICard } from "../utils";
+import { type Token, type ICard } from "../utils";
+import { getRandomCard } from "../cards";
 
 export interface IPlayer {
   id: number;
-  card: ICard | null;
+  card: ICard;
   score: number;
   isHintShowing: boolean;
 }
 
+type AnswersMap = Record<IPlayer["id"], Token>;
+
 interface IGameStore {
   players: IPlayer[];
-  commonCard: ICard | null;
+  commonCard: ICard;
   setCommonCard: (card: ICard) => void;
-  answers: Record<IPlayer["id"], number>;
+  answers: AnswersMap;
   getPlayer: (playerID: IPlayer["id"]) => IPlayer;
   drawCard: (playerID: IPlayer["id"], card: ICard) => void;
   incrementScore: (playerID: IPlayer["id"]) => void;
@@ -24,29 +27,57 @@ interface IGameStore {
 const getPlayerIndex = (playerID: IPlayer["id"], players: IPlayer[]) =>
   R.findIndex(R.propEq(playerID, "id"), players);
 
+const computeAnswers = (players: IPlayer[], commonCard: ICard): AnswersMap =>
+  R.fromPairs(
+    players.map(({ card, id }) => [
+      id,
+      R.intersection(card.tokens, commonCard.tokens)[0], // It's guaranteed by the game rules that the intersection will always have exactly one token
+    ])
+  );
+
+const getInitialState = (): Pick<
+  IGameStore,
+  "answers" | "commonCard" | "players"
+> => {
+  const firstCard = getRandomCard({ excludeIDs: [] });
+  const secondCard = getRandomCard({ excludeIDs: [firstCard.id] });
+  const thirdCard = getRandomCard({
+    excludeIDs: [firstCard.id, secondCard.id],
+  });
+
+  const players = [
+    { card: firstCard, id: 1, isHintShowing: false, score: 0 },
+    { card: secondCard, id: 2, isHintShowing: false, score: 0 },
+  ];
+
+  return {
+    players,
+    commonCard: thirdCard,
+    answers: computeAnswers(players, thirdCard),
+  };
+};
+
 export const useGame = create<IGameStore>((set, get) => ({
-  players: [
-    { card: null, id: 1, isHintShowing: false, score: 0 },
-    { card: null, id: 2, isHintShowing: false, score: 0 },
-  ],
-  commonCard: null,
-  answers: {},
+  ...getInitialState(),
 
   setCommonCard: (newCommonCard) => {
     const { players } = get();
 
     set({
-      answers: R.fromPairs(
-        players.map(({ card, id }) => [
-          id,
-          R.intersection(card?.tokens ?? [], newCommonCard?.tokens ?? [])[0],
-        ])
-      ),
+      answers: computeAnswers(players, newCommonCard),
     });
     set({ commonCard: newCommonCard });
   },
 
-  getPlayer: (playerID) => R.find(R.propEq(playerID, "id"), get().players)!, // TODO
+  getPlayer: (playerID) => {
+    const player = R.find(R.propEq(playerID, "id"), get().players);
+
+    if (!player) {
+      throw new Error(`Player with ID [${playerID}] does not exist`);
+    }
+
+    return player;
+  },
 
   incrementScore: (playerID) => {
     const { players } = get();

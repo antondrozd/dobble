@@ -3,7 +3,7 @@ import { EmojiObjectsTwoTone } from "@mui/icons-material";
 import * as R from "ramda";
 
 import Card from "../Card";
-import { ICard, getRandomRotation } from "../../utils";
+import { type ICard, type Token, getRandomRotation } from "../../utils";
 import { type IPlayer, useGame } from "../../hooks";
 import { getRandomCard } from "../../cards";
 
@@ -25,11 +25,7 @@ const PlayerPane = ({ playerID, cardSize, className }: Props) => {
   } = useGame();
   const { isHintShowing, score, card } = getPlayer(playerID);
 
-  if (!card) {
-    return null;
-  }
-
-  const handleTokenClick = (token: number) => {
+  const handleTokenClick = (token: Token) => {
     if (token === answers[playerID]) {
       const existingCardIDs = R.pluck(
         "id",

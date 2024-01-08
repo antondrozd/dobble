@@ -4,20 +4,21 @@ import { Card as MUICard, css, styled, keyframes } from "@mui/material";
 import icons from "./icons";
 import { useIconsEffects } from "../../hooks";
 import { cards } from "../../cards";
+import { type Token } from "../../utils";
 
 const iconsPackShift = random.int(0, icons.length - cards.length - 1);
 
 type BaseProps = {
-  tokens: number[];
+  tokens: Token[];
   size?: string;
-  onTokenClick?: (token: number) => void;
+  onTokenClick?: (token: Token) => void;
   className?: string;
 };
 
 type HintProps =
   | { answer?: never; onAnswerRevealed?: never }
   | {
-      answer?: number;
+      answer?: Token;
       onAnswerRevealed: () => void;
     };
 
@@ -60,13 +61,13 @@ const Card = ({
 };
 
 const flash = keyframes`
-    50% {
-        opacity: 0;
-    }
+  50% {
+      opacity: 0;
+  }
 
-    to {
-        opacity: 1;
-    }
+  to {
+      opacity: 1;
+  }
 `;
 
 const MUICardStyled = styled(MUICard, {
