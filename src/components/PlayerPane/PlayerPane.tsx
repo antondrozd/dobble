@@ -4,7 +4,7 @@ import * as R from "ramda";
 
 import Card from "../Card";
 import { ICard, getRandomRotation } from "../../utils";
-import { IPlayer, useGame } from "../../store";
+import { type IPlayer, useGame } from "../../hooks";
 import { getRandomCard } from "../../cards";
 
 type Props = {

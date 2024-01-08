@@ -1,6 +1,6 @@
 import random from "random";
 import { useMemo } from "react";
-import { getRandomRotation } from "./utils";
+import { getRandomRotation } from "../utils";
 
 const effectsCache = new WeakMap();
 const defaultScalingParams = { min: 0.7, max: 1.7 };

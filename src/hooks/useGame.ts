@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import * as R from "ramda";
 
-import { type ICard } from "./utils";
+import { type ICard } from "../utils";
 
 export interface IPlayer {
   id: number;
