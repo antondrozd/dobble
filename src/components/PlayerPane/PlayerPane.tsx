@@ -7,7 +7,7 @@ import {
   type ICard,
   type Token,
   getRandomRotation,
-  getRandomCard,
+  getRandomItemsSet,
 } from "../../utils";
 import { type IPlayer, useGame } from "../../hooks";
 import { cards } from "../../cards";
@@ -32,13 +32,20 @@ const PlayerPane = ({ playerID, cardSize, className }: Props) => {
 
   const handleTokenClick = (token: Token) => {
     if (token === answers[playerID]) {
-      const existingCardIDs = R.pluck(
+      const inGameCardIDs = R.pluck(
         "id",
-        R.pluck("card", players) as ICard[] // cards should exist
+        R.pluck("card", players) as ICard[] // cards should exist at this stage
       );
 
+      const avaliableCards = R.reject(
+        R.where({ id: R.includes(R.__, inGameCardIDs) }),
+        cards
+      );
+
+      const nextRandomCard = getRandomItemsSet(1, avaliableCards)[0];
+
       incrementScore(playerID);
-      drawCard(playerID, getRandomCard({ cards, excludeIDs: existingCardIDs }));
+      drawCard(playerID, nextRandomCard);
       setCommonCard(card);
     }
   };
