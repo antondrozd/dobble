@@ -1,11 +1,12 @@
-import random from "random";
 import { Card as MUICard, css, styled, keyframes } from "@mui/material";
 
-import icons from "./icons";
+import { getIconsPack } from "./icons";
 import { useIconsEffects } from "../../hooks";
-import { type Token, cards } from "../../cards";
+import { type Token } from "../../cards";
+import { TOKENS_PER_CARD } from "../../constants";
+import { getTotalTokensAmount } from "../../utils";
 
-const iconsPackShift = random.int(0, icons.length - cards.length - 1);
+const icons = getIconsPack(getTotalTokensAmount(TOKENS_PER_CARD));
 
 type BaseProps = {
   tokens: Token[];
@@ -43,7 +44,7 @@ const Card = ({
     >
       <>
         {tokens.map((token) => {
-          const Icon = icons[token + iconsPackShift];
+          const { Icon } = icons[token];
 
           return (
             <Icon

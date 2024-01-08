@@ -1,5 +1,9 @@
 import * as R from "ramda";
 import random from "random";
+import { type TokensPerCard } from "../cards";
+
+export const getTotalTokensAmount = (tokensPerCard: TokensPerCard) =>
+  tokensPerCard ** 2 - tokensPerCard + 1;
 
 export const getRandomItemsSet = <T extends { id: number | string }>(
   amount: number,
@@ -12,7 +16,7 @@ export const getRandomItemsSet = <T extends { id: number | string }>(
     throw new Error("Requested amount exceeds the number of available items");
   }
 
-  for (let i = 0; i < amount; i++) {
+  while (set.length < amount) {
     const item = R.reject(R.where({ id: R.includes(R.__, excludeIDs) }), items)[
       random.int(0, items.length - excludeIDs.length - 1)
     ];
