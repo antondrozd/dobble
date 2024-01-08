@@ -3,9 +3,14 @@ import { EmojiObjectsTwoTone } from "@mui/icons-material";
 import * as R from "ramda";
 
 import Card from "../Card";
-import { type ICard, type Token, getRandomRotation } from "../../utils";
+import {
+  type ICard,
+  type Token,
+  getRandomRotation,
+  getRandomCard,
+} from "../../utils";
 import { type IPlayer, useGame } from "../../hooks";
-import { getRandomCard } from "../../cards";
+import { cards } from "../../cards";
 
 type Props = {
   playerID: IPlayer["id"];
@@ -33,7 +38,7 @@ const PlayerPane = ({ playerID, cardSize, className }: Props) => {
       );
 
       incrementScore(playerID);
-      drawCard(playerID, getRandomCard({ excludeIDs: existingCardIDs }));
+      drawCard(playerID, getRandomCard({ cards, excludeIDs: existingCardIDs }));
       setCommonCard(card);
     }
   };

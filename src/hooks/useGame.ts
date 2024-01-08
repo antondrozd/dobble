@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import * as R from "ramda";
 
-import { type Token, type ICard } from "../utils";
-import { getRandomCard } from "../cards";
+import { type Token, type ICard, getRandomCardsSet } from "../utils";
+import { cards } from "../cards";
 
 export interface IPlayer {
   id: number;
@@ -39,11 +39,7 @@ const getInitialState = (): Pick<
   IGameStore,
   "answers" | "commonCard" | "players"
 > => {
-  const firstCard = getRandomCard({ excludeIDs: [] });
-  const secondCard = getRandomCard({ excludeIDs: [firstCard.id] });
-  const thirdCard = getRandomCard({
-    excludeIDs: [firstCard.id, secondCard.id],
-  });
+  const [firstCard, secondCard, thirdCard] = getRandomCardsSet(3, cards);
 
   const players = [
     { card: firstCard, id: 1, isHintShowing: false, score: 0 },

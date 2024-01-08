@@ -43,11 +43,35 @@ const generateTokenMatrix = (rowLenth: TokensPerCard) => {
 export const generateCards = (tokensPerCard: TokensPerCard): ICard[] =>
   generateTokenMatrix(tokensPerCard).map((tokens, i) => ({ id: i, tokens }));
 
-export const createRandomCardSelector =
-  (cards: ICard[]) =>
-  ({ excludeIDs }: { excludeIDs: ICard["id"][] }) =>
-    R.reject(R.where({ id: R.includes(R.__, excludeIDs) }), cards)[
-      random.int(0, cards.length - excludeIDs.length - 1)
-    ];
+export const getRandomCard = ({
+  cards,
+  excludeIDs,
+}: {
+  cards: ICard[];
+  excludeIDs: ICard["id"][];
+}) =>
+  R.reject(R.where({ id: R.includes(R.__, excludeIDs) }), cards)[
+    random.int(0, cards.length - excludeIDs.length - 1)
+  ];
+
+export function getRandomCardsSet(
+  amount: 3,
+  cards: ICard[]
+): [ICard, ICard, ICard];
+// add more overloads if needed
+export function getRandomCardsSet(amount: number, cards: ICard[]): ICard[];
+export function getRandomCardsSet(amount: number, cards: ICard[]) {
+  const cardsSet: ICard[] = [];
+  const excludeIDs: ICard["id"][] = [];
+
+  for (let i = 0; i < amount; i++) {
+    const card = getRandomCard({ cards, excludeIDs });
+
+    cardsSet.push(card);
+    excludeIDs.push(card.id);
+  }
+
+  return cardsSet;
+}
 
 export const getRandomRotation = () => `${random.int(1, 360)}deg`;
