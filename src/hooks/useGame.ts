@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import * as R from "ramda";
 
-import { type Token, type ICard, getRandomItemsSet } from "../utils";
-import { cards } from "../cards";
+import { getRandomItemsSet } from "../utils";
+import { type ICard, cards, type Token } from "../cards";
 
 export interface IPlayer {
   id: number;

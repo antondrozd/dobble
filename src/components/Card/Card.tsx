@@ -3,8 +3,7 @@ import { Card as MUICard, css, styled, keyframes } from "@mui/material";
 
 import icons from "./icons";
 import { useIconsEffects } from "../../hooks";
-import { cards } from "../../cards";
-import { type Token } from "../../utils";
+import { type Token, cards } from "../../cards";
 
 const iconsPackShift = random.int(0, icons.length - cards.length - 1);
 
