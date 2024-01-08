@@ -1,3 +1,2 @@
-export * from "./useIconsEffects";
-export * from "./useCardSize";
+export * from "./useIconsTransform";
 export * from "./useGame";

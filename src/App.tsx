@@ -6,28 +6,27 @@ import { getRandomRotation } from "./utils";
 import "./App.css";
 // import { WIN_SCORE } from "./constants";
 import PlayerPane from "./components/PlayerPane";
-import { useCardSize, useGame } from "./hooks";
+import { useGame } from "./hooks";
 
 function App() {
-  const cardSize = useCardSize();
   const { commonCard, players } = useGame();
 
   return (
-    <Wrapper $windowHeight={window.innerHeight}>
-      <PlayerPaneRotated cardSize={cardSize} playerID={players[0].id} />
-      <CommonCard size={cardSize} tokens={commonCard.tokens} />
-      <PlayerPane cardSize={cardSize} playerID={players[1].id} />
+    <Wrapper>
+      <PlayerPaneRotated playerID={players[0].id} />
+      <CommonCard tokens={commonCard.tokens} />
+      <PlayerPane playerID={players[1].id} />
     </Wrapper>
   );
 }
 
-const Wrapper = styled("main")<{ $windowHeight: number }>`
+const Wrapper = styled("main")`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  height: ${({ $windowHeight }) => `${$windowHeight}px`};
-  padding: ${({ $windowHeight }) => `${$windowHeight * 0.02}px`};
+  height: 100dvh;
+  padding: 2dvh;
   box-sizing: border-box;
   overflow: hidden;
 `;

@@ -9,11 +9,10 @@ import { type ICard, type Token, cards } from "../../cards";
 
 type Props = {
   playerID: IPlayer["id"];
-  cardSize: string;
   className?: string;
 };
 
-const PlayerPane = ({ playerID, cardSize, className }: Props) => {
+const PlayerPane = ({ playerID, className }: Props) => {
   const {
     getPlayer,
     answers,
@@ -48,7 +47,6 @@ const PlayerPane = ({ playerID, cardSize, className }: Props) => {
   return (
     <Wrapper className={className}>
       <RotatedCard
-        size={cardSize}
         tokens={card.tokens}
         onTokenClick={handleTokenClick}
         answer={isHintShowing ? answers[playerID] : undefined}

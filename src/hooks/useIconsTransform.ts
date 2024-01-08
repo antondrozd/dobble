@@ -10,7 +10,7 @@ export interface IEffects {
   scales: number[];
 }
 
-export const useIconsEffects = (
+export const useIconsTransform = (
   tokens: number[],
   scalingParams = defaultScalingParams
 ): IEffects => {
