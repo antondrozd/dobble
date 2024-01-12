@@ -5,9 +5,17 @@ import PlayerPane from "@/components/PlayerPane";
 import { getRandomRotation } from "@/utils";
 // import { WIN_SCORE } from "@/constants";
 import { useGame } from "@/hooks";
+import { useEffect } from "react";
 
 function App() {
-  const { commonCard, players } = useGame();
+  const { commonCard, players, winner, reset } = useGame();
+
+  useEffect(() => {
+    if (winner) {
+      alert(`Player ${winner} won!`);
+      reset();
+    }
+  }, [winner]);
 
   return (
     <Wrapper>

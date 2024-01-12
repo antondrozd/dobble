@@ -3,6 +3,7 @@ import * as R from "ramda";
 
 import { getRandomItemsSet } from "@/utils";
 import { type ICard, cards, type Token } from "@/cards";
+import { WIN_SCORE } from "@/constants";
 
 export interface IPlayer {
   id: number;
@@ -16,8 +17,11 @@ type AnswersMap = Record<IPlayer["id"], Token>;
 interface IGameStore {
   players: IPlayer[];
   commonCard: ICard;
-  setCommonCard: (card: ICard) => void;
   answers: AnswersMap;
+  winScore: number;
+  winner: IPlayer["id"] | null;
+  reset: () => void;
+  setCommonCard: (card: ICard) => void;
   getPlayer: (playerID: IPlayer["id"]) => IPlayer;
   drawCard: (playerID: IPlayer["id"], card: ICard) => void;
   incrementScore: (playerID: IPlayer["id"]) => void;
@@ -37,7 +41,7 @@ const computeAnswers = (players: IPlayer[], commonCard: ICard): AnswersMap =>
 
 const getInitialState = (): Pick<
   IGameStore,
-  "answers" | "commonCard" | "players"
+  "answers" | "commonCard" | "players" | "winScore" | "winner"
 > => {
   const [firstCard, secondCard, thirdCard] = getRandomItemsSet(3, cards);
 
@@ -50,11 +54,17 @@ const getInitialState = (): Pick<
     players,
     commonCard: thirdCard,
     answers: computeAnswers(players, thirdCard),
+    winScore: WIN_SCORE,
+    winner: null,
   };
 };
 
 export const useGame = create<IGameStore>((set, get) => ({
   ...getInitialState(),
+
+  reset: () => {
+    set(getInitialState());
+  },
 
   setCommonCard: (newCommonCard) => {
     const { players } = get();
@@ -76,13 +86,18 @@ export const useGame = create<IGameStore>((set, get) => ({
   },
 
   incrementScore: (playerID) => {
-    const { players } = get();
+    const { players, winScore } = get();
     const scoreLens = R.lensPath<IGameStore["players"]>([
       getPlayerIndex(playerID, players),
       "score",
     ]);
+    const nextScore = R.inc(R.view(scoreLens, players));
 
-    set({ players: R.over(scoreLens, R.inc, players) });
+    set({ players: R.set(scoreLens, nextScore, players) });
+
+    if (nextScore === winScore) {
+      set({ winner: playerID });
+    }
   },
 
   drawCard: (playerID, card) => {
