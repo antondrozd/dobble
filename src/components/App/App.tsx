@@ -3,7 +3,6 @@ import { styled } from "@mui/material";
 import Card from "@/components/Card";
 import PlayerPane from "@/components/PlayerPane";
 import { getRandomRotation } from "@/utils";
-// import { WIN_SCORE } from "@/constants";
 import { useGame } from "@/hooks";
 import { useEffect } from "react";
 
@@ -15,7 +14,7 @@ function App() {
       alert(`Player ${winner} won!`);
       reset();
     }
-  }, [winner]);
+  }, [reset, winner]);
 
   return (
     <Wrapper>

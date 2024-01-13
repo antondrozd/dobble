@@ -28,6 +28,7 @@ const PlayerPane = ({ playerID, className }: Props) => {
     if (token === answers[playerID]) {
       const inGameCardIDs = R.pluck(
         "id",
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         R.pluck("card", players) as ICard[] // cards should exist at this stage
       );
 

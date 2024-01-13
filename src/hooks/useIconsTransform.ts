@@ -1,26 +1,29 @@
 import random from "random";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { getRandomRotation } from "@/utils";
-
-const effectsCache = new WeakMap();
-const defaultScalingParams = { min: 0.7, max: 1.7 };
+import { type Token } from "@/cards";
 
 export interface IEffects {
   rotations: string[];
   scales: number[];
 }
 
+const effectsCache = new WeakMap<Token[], IEffects>();
+const defaultScalingParams = { min: 0.7, max: 1.7 };
+
 export const useIconsTransform = (
-  tokens: number[],
+  tokens: Token[],
   scalingParams = defaultScalingParams
 ): IEffects => {
-  const getRandomScale = () =>
-    random.float(scalingParams.min, scalingParams.max);
+  const getRandomScale = useCallback(
+    () => random.float(scalingParams.min, scalingParams.max),
+    [scalingParams.max, scalingParams.min]
+  );
 
   const iconsEffects = useMemo(() => {
     if (effectsCache.has(tokens)) {
-      return effectsCache.get(tokens);
+      return effectsCache.get(tokens) as IEffects;
     }
 
     const effects = {
@@ -31,7 +34,7 @@ export const useIconsTransform = (
     effectsCache.set(tokens, effects);
 
     return effects;
-  }, [tokens]);
+  }, [getRandomScale, tokens]);
 
   return iconsEffects;
 };

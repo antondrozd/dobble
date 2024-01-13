@@ -91,7 +91,9 @@ export const useGame = create<IGameStore>((set, get) => ({
       getPlayerIndex(playerID, players),
       "score",
     ]);
-    const nextScore = R.inc(R.view(scoreLens, players));
+    const nextScore = R.inc(
+      R.view<IPlayer[], IPlayer["score"]>(scoreLens, players)
+    );
 
     set({ players: R.set(scoreLens, nextScore, players) });
 
