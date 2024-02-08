@@ -24,6 +24,7 @@ interface IGameStore {
   setCommonCard: (card: ICard) => void;
   getPlayer: (playerID: IPlayer["id"]) => IPlayer;
   drawCard: (playerID: IPlayer["id"], card: ICard) => void;
+  decrementScore: (playerID: IPlayer["id"]) => void;
   incrementScore: (playerID: IPlayer["id"]) => void;
   toggleHint: (playerID: IPlayer["id"]) => void;
 }
@@ -83,6 +84,19 @@ export const useGame = create<IGameStore>((set, get) => ({
     }
 
     return player;
+  },
+
+  decrementScore: (playerID) => {
+    const { players } = get();
+    const scoreLens = R.lensPath<IGameStore["players"]>([
+      getPlayerIndex(playerID, players),
+      "score",
+    ]);
+    const nextScore = R.dec(
+      R.view<IPlayer[], IPlayer["score"]>(scoreLens, players)
+    );
+
+    set({ players: R.set(scoreLens, nextScore, players) });
   },
 
   incrementScore: (playerID) => {
