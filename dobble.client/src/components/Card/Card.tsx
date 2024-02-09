@@ -9,7 +9,10 @@ import { getTotalTokensAmount } from "@/utils";
 import { createIconTransformComputer } from "./Card.utils";
 import { getIconsPack } from "./icons";
 
-const icons = getIconsPack(getTotalTokensAmount(TOKENS_PER_CARD));
+const icons = getIconsPack({
+  name: "yana",
+  amount: getTotalTokensAmount(TOKENS_PER_CARD),
+});
 const computeIconTransform = createIconTransformComputer(TOKENS_PER_CARD);
 
 type BaseProps = {
