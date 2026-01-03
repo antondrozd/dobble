@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-import { TokensPerCard } from "@/cards";
+import { type TokensPerCard } from "@dobble/shared";
 
 export const createIconTransformComputer =
   (iconsAmount: TokensPerCard) =>

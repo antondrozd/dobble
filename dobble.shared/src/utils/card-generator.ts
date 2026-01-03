@@ -1,8 +1,7 @@
-import type { Card, Token } from "../entities/index.ts";
-import type { Cortege } from "../ts-utils.ts";
+import type { Card, Token, TokensPerCard } from "../types/card.ts";
 import { TOKENS_PER_CARD } from "../constants.ts";
 
-const generateTokenMatrix = <L extends number>(tokensPerCard: L) => {
+const generateTokenMatrix = (tokensPerCard: TokensPerCard): Token[][] => {
   const matrix: Token[][] = [];
   const n = tokensPerCard - 1;
 
@@ -26,13 +25,13 @@ const generateTokenMatrix = <L extends number>(tokensPerCard: L) => {
     }
   }
 
-  return matrix as Cortege<Token, L>[];
+  return matrix;
 };
 
-const generateCards = (): Card[] =>
-  generateTokenMatrix(TOKENS_PER_CARD).map((tokens, id) => ({
+export const generateCards = (tokensPerCard: TokensPerCard): Card[] =>
+  generateTokenMatrix(tokensPerCard).map((tokens, id) => ({
     id,
     tokens,
   }));
 
-export const allCards: Card[] = generateCards();
+export const allCards: Card[] = generateCards(TOKENS_PER_CARD);

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Room } from "../entities/index.ts";
+import type { Room } from "../entities/room.ts";
 import { GameService } from "./game.service.ts";
 import { ROOM_TIMEOUT_MS } from "../constants.ts";
 

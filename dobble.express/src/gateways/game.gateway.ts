@@ -1,10 +1,10 @@
 import type { Server, Socket } from "socket.io";
-import type { GameService } from "../services/game.service.ts";
-import type { RoomService } from "../services/room.service.ts";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
-} from "./game.events.ts";
+} from "@dobble/shared";
+import type { GameService } from "../services/game.service.ts";
+import type { RoomService } from "../services/room.service.ts";
 import { mapGameStateToDto } from "./game.mapper.ts";
 
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents>;

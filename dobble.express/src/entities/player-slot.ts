@@ -1,4 +1,4 @@
-import type { Card } from "./card.ts";
+import type { Card } from "@dobble/shared";
 
 export type PlayerSlot = {
   id: number;

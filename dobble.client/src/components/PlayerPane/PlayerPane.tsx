@@ -1,61 +1,42 @@
 import { Chip, styled } from "@mui/material";
 import { EmojiObjectsTwoTone } from "@mui/icons-material";
-import * as R from "ramda";
 
+import type { Token, PlayerSlotDto as PlayerSlot } from "@dobble/shared";
 import Card from "@/components/Card";
-import { getRandomRotation, getRandomItemsSet } from "@/utils";
-import { type IPlayer, useGame } from "@/hooks";
-import { type ICard, type Token, cards } from "@/cards";
+import { getRandomRotation } from "@/utils";
 
 type Props = {
-  playerID: IPlayer["id"];
+  slot: PlayerSlot;
+  isYou: boolean;
+  hint?: Token | null;
+  onTokenClick?: (token: Token) => void;
+  onHintClick?: () => void;
+  onHintRevealed?: () => void;
   className?: string;
 };
 
-const PlayerPane = ({ playerID, className }: Props) => {
-  const {
-    getPlayer,
-    answers,
-    toggleHint,
-    incrementScore,
-    drawCard,
-    players,
-    setCommonCard,
-  } = useGame();
-  const { isHintShowing, score, card } = getPlayer(playerID);
-
-  const handleTokenClick = (token: Token) => {
-    if (token === answers[playerID]) {
-      const inGameCardIDs = R.pluck(
-        "id",
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        R.pluck("card", players) as ICard[] // cards should exist at this stage
-      );
-
-      const avaliableCards = R.reject(
-        R.where({ id: R.includes(R.__, inGameCardIDs) }),
-        cards
-      );
-
-      const nextRandomCard = getRandomItemsSet(1, avaliableCards)[0];
-
-      incrementScore(playerID);
-      drawCard(playerID, nextRandomCard);
-      setCommonCard(card);
-    }
-  };
+const PlayerPane = ({
+  slot,
+  isYou,
+  hint,
+  onTokenClick,
+  onHintClick,
+  onHintRevealed,
+  className,
+}: Props) => {
+  const { card, score } = slot;
 
   return (
     <Wrapper className={className}>
       <RotatedCard
         tokens={card.tokens}
-        onTokenClick={handleTokenClick}
-        answer={isHintShowing ? answers[playerID] : undefined}
-        onAnswerRevealed={() => toggleHint(playerID)}
+        onTokenClick={isYou ? onTokenClick : undefined}
+        answer={hint ?? undefined}
+        onAnswerRevealed={onHintRevealed ?? (() => {})}
       />
       <Controls>
         <Chip label={`Score: ${score}`} color="success" sx={{ mt: 2 }} />
-        <HintIcon onClick={() => toggleHint(playerID)} />
+        {isYou && <HintIcon onClick={onHintClick} />}
       </Controls>
     </Wrapper>
   );

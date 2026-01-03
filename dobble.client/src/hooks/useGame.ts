@@ -1,13 +1,12 @@
 import { create } from "zustand";
 import * as R from "ramda";
 
+import { type Card, type Token, allCards, WIN_SCORE } from "@dobble/shared";
 import { getRandomItemsSet } from "@/utils";
-import { type ICard, cards, type Token } from "@/cards";
-import { WIN_SCORE } from "@/constants";
 
 export interface IPlayer {
   id: number;
-  card: ICard;
+  card: Card;
   score: number;
   isHintShowing: boolean;
 }
@@ -16,14 +15,14 @@ type AnswersMap = Record<IPlayer["id"], Token>;
 
 interface IGameStore {
   players: IPlayer[];
-  commonCard: ICard;
+  commonCard: Card;
   answers: AnswersMap;
   winScore: number;
   winner: IPlayer["id"] | null;
   reset: () => void;
-  setCommonCard: (card: ICard) => void;
+  setCommonCard: (card: Card) => void;
   getPlayer: (playerID: IPlayer["id"]) => IPlayer;
-  drawCard: (playerID: IPlayer["id"], card: ICard) => void;
+  drawCard: (playerID: IPlayer["id"], card: Card) => void;
   decrementScore: (playerID: IPlayer["id"]) => void;
   incrementScore: (playerID: IPlayer["id"]) => void;
   toggleHint: (playerID: IPlayer["id"]) => void;
@@ -32,7 +31,7 @@ interface IGameStore {
 const getPlayerIndex = (playerID: IPlayer["id"], players: IPlayer[]) =>
   R.findIndex(R.propEq(playerID, "id"), players);
 
-const computeAnswers = (players: IPlayer[], commonCard: ICard): AnswersMap =>
+const computeAnswers = (players: IPlayer[], commonCard: Card): AnswersMap =>
   R.fromPairs(
     players.map(({ card, id }) => [
       id,
@@ -44,7 +43,7 @@ const getInitialState = (): Pick<
   IGameStore,
   "answers" | "commonCard" | "players" | "winScore" | "winner"
 > => {
-  const [firstCard, secondCard, thirdCard] = getRandomItemsSet(3, cards);
+  const [firstCard, secondCard, thirdCard] = getRandomItemsSet(3, allCards);
 
   const players = [
     { card: firstCard, id: 1, isHintShowing: false, score: 0 },

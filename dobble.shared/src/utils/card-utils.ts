@@ -1,12 +1,10 @@
-import type { Card, Token } from "../entities/index.ts";
-import type { Cortege } from "../ts-utils.ts";
+import type { Card, Token } from "../types/card.ts";
 import { allCards } from "./card-generator.ts";
 
-// Pick N random cards, excluding specific card IDs
-export const getRandomCards = <L extends number>(
-  count: L,
+export const getRandomCards = (
+  count: number,
   excludeIds: number[] = []
-) => {
+): Card[] => {
   const available = allCards.filter((card) => !excludeIds.includes(card.id));
 
   if (available.length < count) {
@@ -24,11 +22,9 @@ export const getRandomCards = <L extends number>(
     }
   }
 
-  return selected as Cortege<Card, L>;
+  return selected;
 };
 
-// Find the one matching token between two cards
-// (guaranteed to exist by projective plane property)
 export const findMatchingToken = (card1: Card, card2: Card): Token => {
   for (const token of card1.tokens) {
     if (card2.tokens.includes(token)) {

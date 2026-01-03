@@ -1,18 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { Card as MUICard, css, styled, keyframes } from "@mui/material";
 
-import { useIconsTransform } from "@/hooks";
-import { type Token } from "@/cards";
-import { TOKENS_PER_CARD } from "@/constants";
+import { type Token, TOKENS_PER_CARD } from "@dobble/shared";
+import { useIconsTransform, useSeed } from "@/hooks";
 import { getTotalTokensAmount } from "@/utils";
 
 import { createIconTransformComputer } from "./Card.utils";
 import { getIconsPack } from "./icons";
+import { useMemo } from "react";
 
-const icons = getIconsPack({
-  name: "yana",
-  amount: getTotalTokensAmount(TOKENS_PER_CARD),
-});
 const computeIconTransform = createIconTransformComputer(TOKENS_PER_CARD);
 
 type BaseProps = {
@@ -38,6 +34,16 @@ const Card = ({
   className,
 }: Props) => {
   const iconEffects = useIconsTransform(tokens);
+  const seed = useSeed((state) => state.seed);
+  const icons = useMemo(
+    () =>
+      getIconsPack({
+        name: "dogs",
+        amount: getTotalTokensAmount(TOKENS_PER_CARD),
+        seed,
+      }),
+    [seed]
+  );
 
   return (
     <MUICardStyled $clickable={!!onTokenClick} className={className}>
@@ -76,8 +82,8 @@ const MUICardStyled = styled(MUICard, {
   $clickable: boolean;
 }>`
   position: relative;
-  width: 30dvh;
-  height: 30dvh;
+  width: 47dvh;
+  height: 47dvh;
   border-radius: 100%;
 
   > * {

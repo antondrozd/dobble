@@ -1,5 +1,5 @@
+import type { GameStateDto } from "@dobble/shared";
 import type { GameState } from "../entities/index.ts";
-import type { GameStateDto } from "../dto/index.ts";
 
 export const mapGameStateToDto = (
   state: GameState,
@@ -14,4 +14,5 @@ export const mapGameStateToDto = (
   winner: state.winner,
   isGameActive: state.isGameActive,
   yourSlotId: slotId,
+  seed: state.seed,
 });

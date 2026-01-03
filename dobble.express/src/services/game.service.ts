@@ -1,8 +1,11 @@
-import type { GameState, PlayerSlot, Token } from "../entities/index.ts";
-import type { GameStateDto } from "../dto/index.ts";
-import { WIN_SCORE } from "../constants.ts";
-import { getRandomCards, findMatchingToken } from "../utils/index.ts";
-import { mapGameStateToDto } from "../gateways/game.mapper.ts";
+import {
+  type Token,
+  WIN_SCORE,
+  getRandomCards,
+  findMatchingToken,
+  MAX_INT32,
+} from "@dobble/shared";
+import type { GameState, PlayerSlot } from "../entities/index.ts";
 
 export class GameService {
   private state: GameState;
@@ -22,6 +25,7 @@ export class GameService {
       commonCard,
       winner: null,
       isGameActive: false,
+      seed: Math.floor(Math.random() * MAX_INT32),
     };
   }
 
@@ -107,15 +111,6 @@ export class GameService {
   getState(): Readonly<GameState> {
     return this.state;
   }
-
-  // getClientState(socketId: string): GameStateDto | null {
-  //   const slot = this.getSlotBySocketId(socketId);
-  //   if (!slot) {
-  //     return null;
-  //   }
-
-  //   return mapGameStateToDto(this.state, slot.id);
-  // }
 
   getHint(socketId: string): Token | null {
     const slot = this.getSlotBySocketId(socketId);

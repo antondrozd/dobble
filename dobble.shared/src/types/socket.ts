@@ -1,5 +1,5 @@
-import type { Token } from "../entities/index.ts";
-import type { GameStateDto } from "../dto/game.dto.ts";
+import type { Token } from "./card.ts";
+import type { GameStateDto } from "./game.ts";
 
 export type ClientToServerEvents = {
   "game:join": (data: { roomId: string }) => void;

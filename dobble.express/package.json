@@ -9,6 +9,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@dobble/shared": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "socket.io": "^4.7.4"
