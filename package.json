@@ -1,13 +1,18 @@
 {
   "name": "dobble",
   "private": true,
+  "packageManager": "pnpm@10.27.0",
   "scripts": {
-    "dev": "concurrently -n server,client -c green,magenta \"pnpm -F @dobble/server start:dev\" \"pnpm -F @dobble/client dev\"",
-    "dev:server": "pnpm -F @dobble/server start:dev",
-    "dev:client": "pnpm -F @dobble/client dev",
-    "build": "pnpm -F @dobble/server build && pnpm -F @dobble/client build"
+    "dev": "turbo dev",
+    "dev:server": "turbo dev --filter=@dobble/server",
+    "dev:client": "turbo dev --filter=@dobble/client",
+    "build": "turbo build",
+    "build:server": "turbo build --filter=@dobble/server",
+    "build:client": "turbo build --filter=@dobble/client",
+    "lint": "turbo lint",
+    "test": "turbo test"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "turbo": "^2.7.2"
   }
 }
