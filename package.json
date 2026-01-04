@@ -1,0 +1,13 @@
+{
+  "name": "dobble",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n server,client -c green,magenta \"pnpm -F @dobble/server start:dev\" \"pnpm -F @dobble/client dev\"",
+    "dev:server": "pnpm -F @dobble/server start:dev",
+    "dev:client": "pnpm -F @dobble/client dev",
+    "build": "pnpm -F @dobble/server build && pnpm -F @dobble/client build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

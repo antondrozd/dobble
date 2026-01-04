@@ -1,4 +1,5 @@
 packages:
-  - "dobble.shared"
-  - "dobble.client"
-  - "dobble.express"
+  - "shared"
+  - "client"
+  - "dobble.express(deprecated)"
+  - "server"

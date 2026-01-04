@@ -1,0 +1,1 @@
+{"root":["./src/constants.ts","./src/index.ts","./src/types/card.ts","./src/types/game.ts","./src/types/socket.ts","./src/utils/card-generator.ts","./src/utils/card-utils.ts"],"version":"5.9.3"}
