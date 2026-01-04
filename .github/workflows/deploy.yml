@@ -1,0 +1,74 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # ============== CI: Build & Push Images ==============
+  build-server:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./server/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/server:${{ github.sha }}
+
+  build-client:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./client/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/client:${{ github.sha }}
+          build-args: |
+            VITE_SERVER_URL=${{ vars.SERVER_URL }}
+
+  # ============== CD: Deploy to Railway ==============
+  deploy-server:
+    needs: build-server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        run: npx @railway/cli up -s dobble-server
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+  deploy-client:
+    needs: build-client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        run: npx @railway/cli up -s dobble-client
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
