@@ -54,21 +54,23 @@ jobs:
   deploy-server:
     needs: build-server
     runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Deploy to Railway
-        run: npx @railway/cli up -s dobble-server
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up -s dobble-server
 
   deploy-client:
     needs: build-client
     runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Deploy to Railway
-        run: npx @railway/cli up -s dobble-client
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up -s dobble-client
