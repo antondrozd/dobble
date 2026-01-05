@@ -88,16 +88,3 @@ body {
 * {
   user-select: none !important;
 }
-
-/* Hover styles only for devices that support hover */
-@media (hover: hover) {
-  .hover-clickable:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-    filter: brightness(1.2);
-  }
-
-  .hover-clickable {
-    transition: transform 0.2s ease, filter 0.2s ease;
-  }
-}

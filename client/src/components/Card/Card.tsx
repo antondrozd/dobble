@@ -56,13 +56,17 @@ const Card = ({
         const transformStyle = computeIconTransform(i, iconEffects);
 
         return (
-          <Icon
+          <div
             key={token}
             onClick={() => onTokenClick?.(token)}
             onAnimationEnd={answer === token ? onAnswerRevealed : undefined}
-            className={`absolute top-1/2 left-1/2 w-[15%]! h-[15%]! ${isClickable ? "hover-clickable" : ""} ${answer === token ? "animate-flash" : ""}`}
+            className={`absolute top-1/2 left-1/2 w-[15%] h-[15%] ${answer === token ? "animate-flash" : ""}`}
             style={transformStyle}
-          />
+          >
+            <Icon
+              className={`w-full h-full transition-transform ${isClickable ? "cursor-pointer hover:scale-110 active:scale-90" : ""}`}
+            />
+          </div>
         );
       })}
     </div>
