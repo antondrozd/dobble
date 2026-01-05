@@ -4,8 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - 'server/**'
-      - 'shared/**'
+      - "server/**"
+      - "shared/**"
+      - pnpm-lock.yaml
 
 jobs:
   build:
