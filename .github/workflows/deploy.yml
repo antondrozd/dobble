@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  # ============== CI: Build & Push Images ==============
+  # ============== CI: Build & Push images ==============
   build-server:
     runs-on: ubuntu-latest
     permissions:
@@ -50,7 +50,7 @@ jobs:
           build-args: |
             VITE_SERVER_URL=${{ vars.SERVER_URL }}
 
-  # ============== CD: Deploy to Railway ==============
+  # ============== CD: Trigger Railway deployment ==============
   deploy-server:
     needs: build-server
     runs-on: ubuntu-latest
@@ -59,10 +59,8 @@ jobs:
       SVC_ID: 9368db24-196c-4ce4-8af2-60c37a6a58c4
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Railway
-        run: railway up --service=${{ env.SVC_ID }} -d server/Dockerfile
+      - name: Trigger Railway Redeploy
+        run: railway redeploy --service=${{ env.SVC_ID }} --yes
 
   deploy-client:
     needs: build-client
@@ -72,7 +70,5 @@ jobs:
       SVC_ID: 49cb17e3-8def-43af-825e-dd34bbed57a0
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Railway
-        run: railway up --service=${{ env.SVC_ID }} -d client/Dockerfile
+      - name: Trigger Railway Redeploy
+        run: railway redeploy --service=${{ env.SVC_ID }} --yes
