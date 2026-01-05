@@ -1,21 +1,20 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import random from "random";
+import { describe, it, expect } from "vitest";
 import { getTotalTokensAmount, getRandomItemsSet, getRandomRotation } from ".";
 
 describe("getTotalTokensAmount", () => {
+  it("calculates correct amount for 4 tokens per card", () => {
+    // Formula: 4^2 - 4 + 1 = 13
+    expect(getTotalTokensAmount(4)).toBe(13);
+  });
+
   it("calculates correct amount for 8 tokens per card", () => {
     // Formula: n^2 - n + 1 = 8^2 - 8 + 1 = 57
     expect(getTotalTokensAmount(8)).toBe(57);
   });
 
-  it("calculates correct amount for 3 tokens per card", () => {
-    // Formula: 3^2 - 3 + 1 = 7
-    expect(getTotalTokensAmount(3)).toBe(7);
-  });
-
-  it("calculates correct amount for 4 tokens per card", () => {
-    // Formula: 4^2 - 4 + 1 = 13
-    expect(getTotalTokensAmount(4)).toBe(13);
+  it("calculates correct amount for 12 tokens per card", () => {
+    // Formula: 12^2 - 12 + 1 = 133
+    expect(getTotalTokensAmount(12)).toBe(133);
   });
 });
 
@@ -27,10 +26,6 @@ describe("getRandomItemsSet", () => {
     { id: 4, name: "d" },
     { id: 5, name: "e" },
   ];
-
-  beforeEach(() => {
-    random.use("test-seed" as unknown as random.Engine);
-  });
 
   it("returns requested number of items", () => {
     const result = getRandomItemsSet(3, items);
