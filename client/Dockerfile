@@ -5,7 +5,8 @@ RUN corepack enable && corepack prepare pnpm@10 --activate
 
 WORKDIR /app
 COPY . .
-RUN npx turbo prune --scope=@dobble/client --docker
+RUN pnpm install --frozen-lockfile
+RUN pnpm turbo prune --scope=@dobble/client --docker
 
 # Build stage
 FROM node:24-alpine AS builder

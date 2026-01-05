@@ -5,7 +5,8 @@ RUN corepack enable && corepack prepare pnpm@10 --activate
 
 WORKDIR /app
 COPY . .
-RUN npx turbo prune --scope=@dobble/server --docker
+RUN pnpm install --frozen-lockfile
+RUN pnpm turbo prune --scope=@dobble/server --docker
 
 # Build stage - install deps, build, and create standalone deployment
 FROM node:24-alpine AS builder
