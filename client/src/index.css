@@ -8,13 +8,13 @@
   --animate-shine: shine 3s linear infinite;
   --animate-spin-fun: spin 1s linear infinite;
 
-  /* Custom colors */
-  --color-fun-pink: #f093fb;
-  --color-fun-purple: #764ba2;
-  --color-fun-blue: #667eea;
-  --color-fun-orange: #feca57;
-  --color-fun-red: #ff6b6b;
-  --color-fun-teal: #a8edea;
+  /* Custom colors - dark violet theme */
+  --color-fun-pink: #e879f9;
+  --color-fun-purple: #a855f7;
+  --color-fun-blue: #7c3aed;
+  --color-fun-orange: #c084fc;
+  --color-fun-red: #f472b6;
+  --color-fun-teal: #a78bfa;
 
   @keyframes flash {
     50% { opacity: 0; }
@@ -44,7 +44,7 @@
 
 /* Gradient text utility */
 @utility text-gradient {
-  background: linear-gradient(135deg, #fff, var(--color-fun-orange), var(--color-fun-red), var(--color-fun-orange), #fff);
+  background: linear-gradient(135deg, #fff, var(--color-fun-pink), var(--color-fun-purple), var(--color-fun-pink), #fff);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -54,9 +54,9 @@
 
 /* Glass morphism utility */
 @utility glass {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(139, 92, 246, 0.15);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(167, 139, 250, 0.3);
 }
 
 :root {
@@ -75,7 +75,7 @@ body {
   margin: 0;
   min-height: 100dvh;
   min-width: 320px;
-  background: linear-gradient(135deg, var(--color-fun-blue) 0%, var(--color-fun-purple) 50%, var(--color-fun-pink) 100%);
+  background: linear-gradient(135deg, #0f0a1a 0%, #1e1033 40%, #2d1f4a 100%);
   background-attachment: fixed;
 }
 
