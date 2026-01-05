@@ -2,6 +2,7 @@ import type { Card } from "./card";
 
 export type PlayerSlotDto = {
   id: number;
+  name: string;
   card: Card;
   score: number;
 };

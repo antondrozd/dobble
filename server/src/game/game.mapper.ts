@@ -5,8 +5,9 @@ export const mapGameStateToDto = (
   state: GameState,
   slotId: number,
 ): GameStateDto => ({
-  slots: state.slots.map(({ id, card, score }) => ({
+  slots: state.slots.map(({ id, name, card, score }) => ({
     id,
+    name,
     card,
     score,
   })),

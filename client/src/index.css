@@ -17,34 +17,63 @@
   --color-fun-teal: #a78bfa;
 
   @keyframes flash {
-    50% { opacity: 0; }
-    100% { opacity: 1; }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
   @keyframes bounce-in {
-    0% { transform: scale(0.3); opacity: 0; }
-    50% { transform: scale(1.05); }
-    70% { transform: scale(0.9); }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   @keyframes pulse-slow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   @keyframes shine {
-    to { background-position: 200% center; }
+    to {
+      background-position: 200% center;
+    }
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
 
-/* Gradient text utility */
 @utility text-gradient {
-  background: linear-gradient(135deg, #fff, var(--color-fun-pink), var(--color-fun-purple), var(--color-fun-pink), #fff);
+  background: linear-gradient(
+    135deg,
+    #fff,
+    var(--color-fun-pink),
+    var(--color-fun-purple),
+    var(--color-fun-pink),
+    #fff
+  );
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -59,8 +88,20 @@
   border: 1px solid rgba(167, 139, 250, 0.3);
 }
 
+/* Card base styles */
+.card-base {
+  @apply aspect-square w-(--card-size) rounded-full bg-linear-to-br from-white to-gray-100 border-4 border-white/50 shrink-0;
+}
+
+.score-box {
+  @apply glass rounded-2xl px-4 sm:px-6 py-2 sm:py-3 text-center;
+}
+
 :root {
-  font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive, system-ui, sans-serif;
+  --card-size: min(42dvh, 90dvw);
+  font-size: max(14px, calc(var(--card-size) * 0.05));
+  font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive,
+    system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
@@ -77,12 +118,6 @@ body {
   min-width: 320px;
   background: linear-gradient(135deg, #0f0a1a 0%, #1e1033 40%, #2d1f4a 100%);
   background-attachment: fixed;
-}
-
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  text-align: center;
 }
 
 * {

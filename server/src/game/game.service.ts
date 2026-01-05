@@ -17,8 +17,8 @@ export class GameService {
 
     return {
       slots: [
-        { id: 1, socketId: null, card: card1, score: 0 },
-        { id: 2, socketId: null, card: card2, score: 0 },
+        { id: 1, name: "", socketId: null, card: card1, score: 0 },
+        { id: 2, name: "", socketId: null, card: card2, score: 0 },
       ],
       commonCard,
       winner: null,
@@ -31,13 +31,14 @@ export class GameService {
     return this.state.slots.find((s) => s.socketId === socketId) ?? null;
   }
 
-  addPlayer(socketId: string): number | null {
+  addPlayer(socketId: string, name: string): number | null {
     const emptySlot = this.state.slots.find((s) => s.socketId === null);
     if (!emptySlot) {
       return null;
     }
 
     emptySlot.socketId = socketId;
+    emptySlot.name = name;
 
     const allConnected = this.state.slots.every((s) => s.socketId !== null);
     if (allConnected) {
@@ -90,12 +91,16 @@ export class GameService {
   }
 
   reset(): void {
-    const socketIds = this.state.slots.map((s) => s.socketId);
+    const players = this.state.slots.map((s) => ({
+      socketId: s.socketId,
+      name: s.name,
+    }));
 
     this.state = this.createInitialState();
 
     this.state.slots.forEach((slot, index) => {
-      slot.socketId = socketIds[index];
+      slot.socketId = players[index].socketId;
+      slot.name = players[index].name;
     });
 
     const allConnected = this.state.slots.every((s) => s.socketId !== null);

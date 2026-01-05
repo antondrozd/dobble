@@ -1,8 +1,11 @@
 import { useSocketGame } from "@/hooks";
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { cn } from "@/utils/cn";
 import PlayerPane from "../PlayerPane";
+import OpponentCard from "../OpponentCard";
 import Card from "../Card";
+import ScoreBox from "../ScoreBox";
 
 export default function Room() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -91,6 +94,7 @@ export default function Room() {
 
   const { slots, commonCard, winner, yourSlotId } = gameState;
   const yourSlot = slots.find((s) => s.id === yourSlotId);
+  const opponentSlot = slots.find((s) => s.id !== yourSlotId);
 
   if (!yourSlot) {
     return null;
@@ -98,18 +102,33 @@ export default function Room() {
 
   if (winner) {
     const isWinner = winner === yourSlotId;
+    const sortedSlots = [...slots].sort((a, b) => b.score - a.score);
     return (
       <main className="flex flex-col items-center justify-center h-dvh gap-6 p-4">
         <h1
-          className={`text-6xl font-black drop-shadow-lg animate-bounce-in ${
+          className={cn(
+            "text-6xl font-black drop-shadow-lg animate-bounce-in",
             isWinner ? "text-gradient" : "text-white/80"
-          }`}
+          )}
         >
           {isWinner ? "You Won!" : "You Lost!"}
         </h1>
         <div className="glass rounded-2xl p-6 text-center">
-          <p className="text-2xl mb-2">Your Score</p>
-          <p className="text-5xl font-black text-gradient">{yourSlot.score}</p>
+          <p className="text-xl mb-4 text-white/70">Final Scores</p>
+          <div className="flex flex-col gap-3">
+            {sortedSlots.map((slot) => (
+              <div
+                key={slot.id}
+                className={cn(
+                  "flex justify-between items-center gap-8",
+                  slot.id === yourSlotId ? "text-gradient font-bold" : "text-white/80"
+                )}
+              >
+                <span className="text-xl">{slot.name}</span>
+                <span className="text-3xl font-black">{slot.score}</span>
+              </div>
+            ))}
+          </div>
         </div>
         <button
           className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
@@ -122,15 +141,27 @@ export default function Room() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center gap-4 h-dvh p-[2dvh] box-border overflow-hidden">
+    <main className="relative flex flex-col items-center justify-center gap-4 h-dvh p-[2dvh] box-border overflow-hidden">
+      {opponentSlot && (
+        <ScoreBox
+          name={opponentSlot.name}
+          score={opponentSlot.score}
+          className="absolute top-4 left-4"
+        />
+      )}
+      <OpponentCard />
       <Card tokens={commonCard.tokens} />
       <PlayerPane
-        slot={yourSlot}
-        isYou
+        card={yourSlot.card}
         hint={hint}
         onTokenClick={submitAnswer}
         onHintClick={requestHint}
         onHintRevealed={clearHint}
+      />
+      <ScoreBox
+        name={yourSlot.name}
+        score={yourSlot.score}
+        className="absolute bottom-4 right-4"
       />
     </main>
   );

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import type { Token, GameStateDto as GameState } from "@dobble/shared/types";
 import { createSocket, type GameSocket } from "@/services/socket";
 import { useSeed } from "./useSeed";
+import { usePlayerName } from "./usePlayerName";
 import { createRoom } from "@/api";
 
 type ConnectionStatus = "disconnected" | "connecting" | "connected" | "error";
@@ -15,6 +16,7 @@ export const useSocketGame = () => {
   const [hint, setHint] = useState<Token | null>(null);
   const [error, setError] = useState<string | null>(null);
   const setSeed = useSeed((state) => state.setSeed);
+  const name = usePlayerName((state) => state.name);
 
   useEffect(() => {
     const socket = createSocket();
@@ -70,11 +72,11 @@ export const useSocketGame = () => {
         if (!socket) return null;
 
         if (socket.connected) {
-          socket.emit("game:join", { roomId: id });
+          socket.emit("game:join", { roomId: id, name });
           setStatus("connected");
         } else {
           socket.once("connect", () => {
-            socket.emit("game:join", { roomId: id });
+            socket.emit("game:join", { roomId: id, name });
             setStatus("connected");
           });
           socket.connect();
@@ -87,7 +89,7 @@ export const useSocketGame = () => {
         return null;
       }
     },
-    []
+    [name]
   );
 
   const submitAnswer = useCallback((token: Token) => {

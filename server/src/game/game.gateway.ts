@@ -66,7 +66,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const slotId = entry.game.addPlayer(client.id);
+    const slotId = entry.game.addPlayer(client.id, data.name);
     if (slotId === null) {
       client.emit("game:full");
       return;
