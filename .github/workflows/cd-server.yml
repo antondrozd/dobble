@@ -1,0 +1,19 @@
+name: Deploy Server
+
+on:
+  workflow_run:
+    workflows: ["Build Server"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    container: ghcr.io/railwayapp/cli:latest
+    env:
+      SVC_ID: 9368db24-196c-4ce4-8af2-60c37a6a58c4
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    steps:
+      - name: Redeploy on Railway
+        run: railway redeploy --service=${{ env.SVC_ID }} --yes
