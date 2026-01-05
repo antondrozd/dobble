@@ -45,7 +45,7 @@ export default function Room() {
           {error}
         </p>
         <button
-          className="px-8 py-4 bg-gradient-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 transition-all uppercase tracking-wide"
+          className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
           onClick={handleBackToLobby}
         >
           Back to Lobby
@@ -75,11 +75,11 @@ export default function Room() {
         </h1>
         <div className="glass rounded-2xl p-6 flex flex-col items-center gap-4">
           <p className="text-xl animate-pulse-slow">Waiting for opponent...</p>
-          <code className="block text-sm text-white/70 break-all max-w-[300px] text-center select-text bg-black/20 px-4 py-2 rounded-lg">
+          <code className="block text-sm text-white/70 break-all max-w-75 text-center select-text bg-black/20 px-4 py-2 rounded-lg">
             {roomUrl}
           </code>
           <button
-            className="px-6 py-3 bg-gradient-to-r from-fun-teal to-fun-pink text-fun-purple font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 transition-all"
+            className="px-6 py-3 bg-linear-to-r from-fun-teal to-fun-pink text-fun-purple font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 active:scale-95 active:shadow-sm transition-all"
             onClick={handleCopyUrl}
           >
             Copy Link
@@ -112,7 +112,7 @@ export default function Room() {
           <p className="text-5xl font-black text-gradient">{yourSlot.score}</p>
         </div>
         <button
-          className="px-8 py-4 bg-gradient-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 transition-all uppercase tracking-wide"
+          className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
           onClick={resetGame}
         >
           Play Again

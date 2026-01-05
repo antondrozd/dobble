@@ -38,7 +38,7 @@ export default function Lobby() {
       {status === "disconnected" && (
         <div className="flex flex-col items-center gap-6 animate-bounce-in">
           <button
-            className="px-8 py-4 bg-gradient-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 transition-all uppercase tracking-wide"
+            className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
             onClick={handleCreateGame}
           >
             Create Game
@@ -55,7 +55,7 @@ export default function Lobby() {
               className="px-5 py-3 border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm text-white placeholder-white/60 outline-none focus:border-fun-orange focus:shadow-lg focus:shadow-fun-orange/30 transition-all"
             />
             <button
-              className="px-6 py-3 bg-gradient-to-r from-fun-teal to-fun-pink text-fun-purple font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-linear-to-r from-fun-teal to-fun-pink text-fun-purple font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 active:scale-95 active:shadow-sm transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
               onClick={handleJoinGame}
               disabled={!joinRoomId}
             >

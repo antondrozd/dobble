@@ -25,7 +25,11 @@ const PlayerPane = ({
   const { card, score } = slot;
 
   return (
-    <div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 items-center ${className ?? ""}`}>
+    <div
+      className={`flex flex-col sm:flex-row gap-3 sm:gap-4 items-center ${
+        className ?? ""
+      }`}
+    >
       <Card
         tokens={card.tokens}
         onTokenClick={isYou ? onTokenClick : undefined}
@@ -37,12 +41,14 @@ const PlayerPane = ({
           <p className="text-xs sm:text-sm text-white/70 uppercase tracking-wider">
             Score
           </p>
-          <p className="text-2xl sm:text-4xl font-black text-gradient">{score}</p>
+          <p className="text-2xl sm:text-4xl font-black text-gradient">
+            {score}
+          </p>
         </div>
         {isYou && (
           <button
             onClick={onHintClick}
-            className="p-2 sm:p-3 rounded-full bg-gradient-to-br from-fun-orange to-fun-red shadow-lg shadow-fun-orange/30 hover:scale-110 hover:shadow-fun-orange/50 transition-all"
+            className="p-2 sm:p-3 rounded-full bg-linear-to-br from-fun-orange to-fun-red shadow-lg shadow-fun-orange/30 hover:scale-110 hover:shadow-fun-orange/50 active:scale-90 active:shadow-sm transition-all"
           >
             <Lightbulb className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </button>
