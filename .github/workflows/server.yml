@@ -1,12 +1,13 @@
-name: Build Client
+name: Server CI/CD
 
 on:
   push:
     branches: [main]
     paths:
-      - "client/**"
+      - "server/**"
       - "shared/**"
       - pnpm-lock.yaml
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,8 +26,17 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./client/Dockerfile
+          file: ./server/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/client:latest
-          build-args: |
-            VITE_SERVER_URL=${{ vars.SERVER_URL }}
+          tags: ghcr.io/${{ github.repository }}/server:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+    env:
+      SVC_ID: 9368db24-196c-4ce4-8af2-60c37a6a58c4
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    steps:
+      - name: Redeploy on Railway
+        run: railway redeploy --service=${{ env.SVC_ID }} --yes
