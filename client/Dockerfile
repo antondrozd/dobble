@@ -26,14 +26,13 @@ COPY --from=pruner /app/out/full/ .
 RUN pnpm turbo build --filter=@dobble/client
 
 # Production stage
-FROM nginx:alpine
+FROM node:24-alpine
 
-COPY --from=builder /app/client/dist /usr/share/nginx/html
-COPY --from=pruner /app/client/nginx.conf /etc/nginx/templates/default.conf.template
+RUN npm install -g serve
 
-# Default port for local development
-ENV PORT=80
+WORKDIR /app
+COPY --from=builder /app/client/dist ./dist
 
-# nginx:alpine uses envsubst automatically for .template files
-# It substitutes env vars and outputs to /etc/nginx/conf.d/
-CMD ["nginx", "-g", "daemon off;"]
+ENV PORT=5173
+
+CMD ["sh", "-c", "serve -s dist -l $PORT"]
