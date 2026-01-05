@@ -1,5 +1,4 @@
-import * as icons from "@mui/icons-material";
-import { Box, type SvgIconProps } from "@mui/material";
+import type { HTMLAttributes } from "react";
 import * as R from "ramda";
 import seedrandom from "seedrandom";
 
@@ -23,46 +22,23 @@ const iconPacks: Record<IconsPack["name"], IconsPack> = {
   },
 };
 
-const colors = [
-  "action",
-  "primary",
-  "secondary",
-  "error",
-  "info",
-  "success",
-  "warning",
-] as const;
+type IconProps = HTMLAttributes<HTMLDivElement>;
 
 type IconEntry = {
   id: number;
-  Icon: React.ComponentType<SvgIconProps>;
+  Icon: React.ComponentType<IconProps>;
 };
 
-const twoToneIcons = R.values(
-  R.pick(R.filter(R.includes("TwoTone"), R.keys(icons)), icons)
-);
-
-const createThemedTwoToneIcons = (rng: () => number): IconEntry[] =>
-  twoToneIcons.map((Icon, i) => {
-    const color = colors[Math.floor(rng() * colors.length)];
-
-    return {
-      id: i,
-      Icon: (props: SvgIconProps) => <Icon color={color} {...props} />,
-    };
-  });
-
 const mapFileIconsPack = (tokenPack: IconsPack): IconEntry[] =>
-  Array.from(new Array(tokenPack.amount)).map((_, i) => {
+  R.range(0, tokenPack.amount).map((i) => {
     const src = `/icon-packs/${tokenPack.name}/icon-${i}.${tokenPack.type}`;
 
     return {
       id: i,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Icon: (props: any) => (
-        <Box {...props}>
-          <img src={src} width="100%" height="100%" />
-        </Box>
+      Icon: (props: IconProps) => (
+        <div {...props}>
+          <img src={src} className="w-full h-full" alt="" />
+        </div>
       ),
     };
   });
@@ -82,27 +58,18 @@ export const getIconsPack = ({
   amount,
   seed,
 }: {
-  name: PackName | "material";
+  name: PackName;
   amount: number;
   seed: number;
 }): IconEntry[] => {
   const rng = seedrandom(seed.toString());
 
-  let allIcons: IconEntry[];
-  switch (name) {
-    case "material":
-      allIcons = createThemedTwoToneIcons(rng);
-      break;
-    default: {
-      if (amount > iconPacks[name].amount) {
-        throw new Error(
-          `Requested icons pack [${name}] has only ${iconPacks[name].amount} icons, while the game requires at least ${amount}`
-        );
-      }
-      allIcons = mapFileIconsPack(iconPacks[name]);
-      break;
-    }
+  if (amount > iconPacks[name].amount) {
+    throw new Error(
+      `Requested icons pack [${name}] has only ${iconPacks[name].amount} icons, while the game requires at least ${amount}`
+    );
   }
+  const allIcons = mapFileIconsPack(iconPacks[name]);
 
   const shuffled = shuffleWithSeed(allIcons, rng);
   const selected = shuffled.slice(0, amount);

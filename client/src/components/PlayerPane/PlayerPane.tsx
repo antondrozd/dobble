@@ -1,9 +1,7 @@
-import { Chip, styled } from "@mui/material";
-import { EmojiObjectsTwoTone } from "@mui/icons-material";
+import { Lightbulb } from "lucide-react";
 
 import type { Token, PlayerSlotDto as PlayerSlot } from "@dobble/shared";
 import Card from "@/components/Card";
-import { getRandomRotation } from "@/utils";
 
 type Props = {
   slot: PlayerSlot;
@@ -27,48 +25,31 @@ const PlayerPane = ({
   const { card, score } = slot;
 
   return (
-    <Wrapper className={className}>
-      <RotatedCard
+    <div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 items-center ${className ?? ""}`}>
+      <Card
         tokens={card.tokens}
         onTokenClick={isYou ? onTokenClick : undefined}
         answer={hint ?? undefined}
         onAnswerRevealed={onHintRevealed ?? (() => {})}
       />
-      <Controls>
-        <Chip label={`Score: ${score}`} color="success" sx={{ mt: 2 }} />
-        {isYou && <HintIcon onClick={onHintClick} />}
-      </Controls>
-    </Wrapper>
+      <div className="flex sm:flex-col flex-row items-center justify-around gap-3 sm:gap-4">
+        <div className="glass rounded-2xl px-4 sm:px-6 py-2 sm:py-3 text-center">
+          <p className="text-xs sm:text-sm text-white/70 uppercase tracking-wider">
+            Score
+          </p>
+          <p className="text-2xl sm:text-4xl font-black text-gradient">{score}</p>
+        </div>
+        {isYou && (
+          <button
+            onClick={onHintClick}
+            className="p-2 sm:p-3 rounded-full bg-gradient-to-br from-fun-orange to-fun-red shadow-lg shadow-fun-orange/30 hover:scale-110 hover:shadow-fun-orange/50 transition-all"
+          >
+            <Lightbulb className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
-
-const Wrapper = styled("div")`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing(2)};
-`;
-
-const RotatedCard = styled(Card)`
-  transform: rotate(${getRandomRotation()});
-`;
-
-const Controls = styled("div")`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-`;
-
-const HintIcon = styled(EmojiObjectsTwoTone)`
-  font-size: 3rem;
-  color: #ffea00;
-
-  @media (hover: hover) {
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.7;
-    }
-  }
-`;
 
 export default PlayerPane;

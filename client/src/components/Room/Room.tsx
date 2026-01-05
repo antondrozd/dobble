@@ -1,6 +1,4 @@
 import { useSocketGame } from "@/hooks";
-import { getRandomRotation } from "@/utils";
-import { Button, CircularProgress, styled } from "@mui/material";
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PlayerPane from "../PlayerPane";
@@ -39,64 +37,93 @@ export default function Room() {
 
   if (error) {
     return (
-      <RoomContainer>
-        <Title>Dobble</Title>
-        <ErrorText>{error}</ErrorText>
-        <Button variant="contained" onClick={handleBackToLobby}>
+      <main className="flex flex-col items-center justify-center h-dvh gap-6 p-4">
+        <h1 className="text-6xl font-black text-gradient drop-shadow-lg">
+          Oops!
+        </h1>
+        <p className="text-fun-red bg-fun-red/20 px-6 py-3 rounded-full backdrop-blur-sm text-lg">
+          {error}
+        </p>
+        <button
+          className="px-8 py-4 bg-gradient-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 transition-all uppercase tracking-wide"
+          onClick={handleBackToLobby}
+        >
           Back to Lobby
-        </Button>
-      </RoomContainer>
+        </button>
+      </main>
     );
   }
 
   if (status === "connecting" || !gameState) {
     return (
-      <RoomContainer>
-        <Title>Dobble</Title>
-        <CircularProgress />
-      </RoomContainer>
+      <main className="flex flex-col items-center justify-center h-dvh gap-6">
+        <h1 className="text-6xl font-black text-gradient drop-shadow-lg animate-pulse-slow">
+          Dobble
+        </h1>
+        <div className="w-12 h-12 border-4 border-white/30 border-t-fun-orange border-r-fun-red rounded-full animate-spin-fun" />
+        <p className="text-white/60">Connecting...</p>
+      </main>
     );
   }
 
   // Waiting for opponent
   if (!gameState.isGameActive) {
     return (
-      <RoomContainer>
-        <Title>Dobble</Title>
-        <p>Waiting for opponent...</p>
-        <RoomUrl>{roomUrl}</RoomUrl>
-        <CopyButton onClick={handleCopyUrl}>Copy Link</CopyButton>
-      </RoomContainer>
+      <main className="flex flex-col items-center justify-center h-dvh gap-6 p-4">
+        <h1 className="text-6xl font-black text-gradient drop-shadow-lg">
+          Dobble
+        </h1>
+        <div className="glass rounded-2xl p-6 flex flex-col items-center gap-4">
+          <p className="text-xl animate-pulse-slow">Waiting for opponent...</p>
+          <code className="block text-sm text-white/70 break-all max-w-[300px] text-center select-text bg-black/20 px-4 py-2 rounded-lg">
+            {roomUrl}
+          </code>
+          <button
+            className="px-6 py-3 bg-gradient-to-r from-fun-teal to-fun-pink text-fun-purple font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 transition-all"
+            onClick={handleCopyUrl}
+          >
+            Copy Link
+          </button>
+        </div>
+      </main>
     );
   }
 
   const { slots, commonCard, winner, yourSlotId } = gameState;
   const yourSlot = slots.find((s) => s.id === yourSlotId);
-  // const opponentSlot = slots.find((s) => s.id !== yourSlotId);
 
-  if (
-    !yourSlot
-    // || !opponentSlot
-  ) {
+  if (!yourSlot) {
     return null;
   }
 
   if (winner) {
+    const isWinner = winner === yourSlotId;
     return (
-      <RoomContainer>
-        <Title>{winner === yourSlotId ? "You won!" : "You lost!"}</Title>
-        Your score: {yourSlot.score}
-        <Button variant="contained" onClick={resetGame}>
+      <main className="flex flex-col items-center justify-center h-dvh gap-6 p-4">
+        <h1
+          className={`text-6xl font-black drop-shadow-lg animate-bounce-in ${
+            isWinner ? "text-gradient" : "text-white/80"
+          }`}
+        >
+          {isWinner ? "You Won!" : "You Lost!"}
+        </h1>
+        <div className="glass rounded-2xl p-6 text-center">
+          <p className="text-2xl mb-2">Your Score</p>
+          <p className="text-5xl font-black text-gradient">{yourSlot.score}</p>
+        </div>
+        <button
+          className="px-8 py-4 bg-gradient-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 transition-all uppercase tracking-wide"
+          onClick={resetGame}
+        >
           Play Again
-        </Button>
-      </RoomContainer>
+        </button>
+      </main>
     );
   }
 
   return (
-    <Wrapper>
-      {/* <OpponentPane slot={opponentSlot} isYou={false} /> */}
-      <CommonCard tokens={commonCard.tokens} />
+    <main className="flex flex-col items-center justify-center gap-4 h-dvh p-[2dvh] box-border overflow-hidden">
+      <Card tokens={commonCard.tokens} />
       <PlayerPane
         slot={yourSlot}
         isYou
@@ -105,58 +132,6 @@ export default function Room() {
         onHintClick={requestHint}
         onHintRevealed={clearHint}
       />
-    </Wrapper>
+    </main>
   );
 }
-
-const RoomContainer = styled("main")`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100dvh;
-  gap: 16px;
-`;
-
-const Title = styled("h1")`
-  font-size: 3rem;
-  margin: 0;
-`;
-
-const ErrorText = styled("p")`
-  color: red;
-`;
-
-const RoomUrl = styled("code")`
-  display: block;
-  font-size: 0.8rem;
-  color: #666;
-  margin: 8px 0;
-  word-break: break-all;
-  max-width: 80%;
-  text-align: center;
-  user-select: text !important;
-`;
-
-const CopyButton = styled(Button)`
-  margin-top: 8px;
-`;
-
-const Wrapper = styled("main")`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  height: 100dvh;
-  padding: 2dvh;
-  box-sizing: border-box;
-  overflow: hidden;
-`;
-
-// const OpponentPane = styled(PlayerPane)`
-//   transform: rotate(180deg);
-// `;
-
-const CommonCard = styled(Card)`
-  transform: rotate(${getRandomRotation()});
-`;

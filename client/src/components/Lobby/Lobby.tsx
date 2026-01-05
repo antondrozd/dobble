@@ -1,5 +1,4 @@
 import { useSocketGame } from "@/hooks";
-import { CircularProgress, Button, TextField, styled } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,65 +22,48 @@ export default function Lobby() {
   };
 
   return (
-    <LobbyContainer>
-      <Title>Dobble</Title>
+    <main className="flex flex-col items-center justify-center h-dvh gap-6 p-4">
+      <h1 className="text-7xl font-black text-gradient drop-shadow-lg animate-bounce-in">
+        Dobble
+      </h1>
 
-      {error && <ErrorText>{error}</ErrorText>}
-      {status === "connecting" && <CircularProgress />}
+      {error && (
+        <p className="text-fun-red bg-fun-red/20 px-4 py-2 rounded-full backdrop-blur-sm">
+          {error}
+        </p>
+      )}
+      {status === "connecting" && (
+        <div className="w-12 h-12 border-4 border-white/30 border-t-fun-orange border-r-fun-red rounded-full animate-spin-fun" />
+      )}
       {status === "disconnected" && (
-        <>
-          <Button variant="contained" size="large" onClick={handleCreateGame}>
+        <div className="flex flex-col items-center gap-6 animate-bounce-in">
+          <button
+            className="px-8 py-4 bg-gradient-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 transition-all uppercase tracking-wide"
+            onClick={handleCreateGame}
+          >
             Create Game
-          </Button>
+          </button>
 
-          <Divider>or</Divider>
+          <span className="text-white/60 text-lg">or join a friend</span>
 
-          <JoinSection>
-            <TextField
-              label="Room ID"
+          <div className="flex gap-3 items-center">
+            <input
+              type="text"
+              placeholder="Enter Room ID"
               value={joinRoomId}
               onChange={(e) => setJoinRoomId(e.target.value.trim())}
-              size="small"
+              className="px-5 py-3 border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm text-white placeholder-white/60 outline-none focus:border-fun-orange focus:shadow-lg focus:shadow-fun-orange/30 transition-all"
             />
-            <Button
-              variant="outlined"
+            <button
+              className="px-6 py-3 bg-gradient-to-r from-fun-teal to-fun-pink text-fun-purple font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
               onClick={handleJoinGame}
               disabled={!joinRoomId}
             >
               Join
-            </Button>
-          </JoinSection>
-        </>
+            </button>
+          </div>
+        </div>
       )}
-    </LobbyContainer>
+    </main>
   );
 }
-
-const LobbyContainer = styled("main")`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100dvh;
-  gap: 16px;
-`;
-
-const Title = styled("h1")`
-  font-size: 3rem;
-  margin: 0;
-`;
-
-const Divider = styled("span")`
-  color: #666;
-  margin: 8px 0;
-`;
-
-const JoinSection = styled("div")`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-`;
-
-const ErrorText = styled("p")`
-  color: red;
-`;
