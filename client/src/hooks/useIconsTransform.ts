@@ -4,17 +4,17 @@ import seedrandom from "seedrandom";
 import type { Token } from "@dobble/shared/types";
 import { useSeed } from "./useSeed";
 
-export interface IEffects {
+export type Effects = {
   rotations: string[];
   scales: number[];
-}
+};
 
 const defaultScalingParams = { min: 0.7, max: 1.7 };
 
 export const useIconsTransform = (
   tokens: Token[],
   scalingParams = defaultScalingParams
-): IEffects => {
+): Effects => {
   const seed = useSeed((state) => state.seed);
 
   return useMemo(() => {

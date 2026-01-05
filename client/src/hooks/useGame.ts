@@ -6,34 +6,34 @@ import { WIN_SCORE } from "@dobble/shared/constants";
 import { allCards } from "@dobble/shared/utils";
 import { getRandomItemsSet } from "@/utils";
 
-export interface IPlayer {
+export type Player = {
   id: number;
   card: Card;
   score: number;
   isHintShowing: boolean;
-}
+};
 
-type AnswersMap = Record<IPlayer["id"], Token>;
+type AnswersMap = Record<Player["id"], Token>;
 
-interface IGameStore {
-  players: IPlayer[];
+type GameStore = {
+  players: Player[];
   commonCard: Card;
   answers: AnswersMap;
   winScore: number;
-  winner: IPlayer["id"] | null;
+  winner: Player["id"] | null;
   reset: () => void;
   setCommonCard: (card: Card) => void;
-  getPlayer: (playerID: IPlayer["id"]) => IPlayer;
-  drawCard: (playerID: IPlayer["id"], card: Card) => void;
-  decrementScore: (playerID: IPlayer["id"]) => void;
-  incrementScore: (playerID: IPlayer["id"]) => void;
-  toggleHint: (playerID: IPlayer["id"]) => void;
-}
+  getPlayer: (playerID: Player["id"]) => Player;
+  drawCard: (playerID: Player["id"], card: Card) => void;
+  decrementScore: (playerID: Player["id"]) => void;
+  incrementScore: (playerID: Player["id"]) => void;
+  toggleHint: (playerID: Player["id"]) => void;
+};
 
-const getPlayerIndex = (playerID: IPlayer["id"], players: IPlayer[]) =>
+const getPlayerIndex = (playerID: Player["id"], players: Player[]) =>
   R.findIndex(R.propEq(playerID, "id"), players);
 
-const computeAnswers = (players: IPlayer[], commonCard: Card): AnswersMap =>
+const computeAnswers = (players: Player[], commonCard: Card): AnswersMap =>
   R.fromPairs(
     players.map(({ card, id }) => [
       id,
@@ -42,7 +42,7 @@ const computeAnswers = (players: IPlayer[], commonCard: Card): AnswersMap =>
   );
 
 const getInitialState = (): Pick<
-  IGameStore,
+  GameStore,
   "answers" | "commonCard" | "players" | "winScore" | "winner"
 > => {
   const [firstCard, secondCard, thirdCard] = getRandomItemsSet(3, allCards);
@@ -61,7 +61,7 @@ const getInitialState = (): Pick<
   };
 };
 
-export const useGame = create<IGameStore>((set, get) => ({
+export const useGame = create<GameStore>((set, get) => ({
   ...getInitialState(),
 
   reset: () => {
@@ -89,12 +89,12 @@ export const useGame = create<IGameStore>((set, get) => ({
 
   decrementScore: (playerID) => {
     const { players } = get();
-    const scoreLens = R.lensPath<IGameStore["players"]>([
+    const scoreLens = R.lensPath<GameStore["players"]>([
       getPlayerIndex(playerID, players),
       "score",
     ]);
     const nextScore = R.dec(
-      R.view<IPlayer[], IPlayer["score"]>(scoreLens, players)
+      R.view<Player[], Player["score"]>(scoreLens, players)
     );
 
     set({ players: R.set(scoreLens, nextScore, players) });
@@ -102,12 +102,12 @@ export const useGame = create<IGameStore>((set, get) => ({
 
   incrementScore: (playerID) => {
     const { players, winScore } = get();
-    const scoreLens = R.lensPath<IGameStore["players"]>([
+    const scoreLens = R.lensPath<GameStore["players"]>([
       getPlayerIndex(playerID, players),
       "score",
     ]);
     const nextScore = R.inc(
-      R.view<IPlayer[], IPlayer["score"]>(scoreLens, players)
+      R.view<Player[], Player["score"]>(scoreLens, players)
     );
 
     set({ players: R.set(scoreLens, nextScore, players) });
@@ -119,7 +119,7 @@ export const useGame = create<IGameStore>((set, get) => ({
 
   drawCard: (playerID, card) => {
     const { players } = get();
-    const cardLens = R.lensPath<IGameStore["players"]>([
+    const cardLens = R.lensPath<GameStore["players"]>([
       getPlayerIndex(playerID, players),
       "card",
     ]);
@@ -129,7 +129,7 @@ export const useGame = create<IGameStore>((set, get) => ({
 
   toggleHint: (playerID) => {
     const { players } = get();
-    const hintLens = R.lensPath<IGameStore["players"]>([
+    const hintLens = R.lensPath<GameStore["players"]>([
       getPlayerIndex(playerID, players),
       "isHintShowing",
     ]);

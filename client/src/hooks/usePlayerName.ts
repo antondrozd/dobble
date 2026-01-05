@@ -12,11 +12,11 @@ const generateName = () =>
     style: "capital",
   });
 
-interface PlayerNameStore {
+type PlayerNameStore = {
   name: string;
   setName: (name: string) => void;
   regenerateName: () => void;
-}
+};
 
 export const usePlayerName = create<PlayerNameStore>((set) => ({
   name: generateName(),
