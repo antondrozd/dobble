@@ -1,4 +1,4 @@
-import type { GameStateDto } from "@dobble/shared";
+import type { GameStateDto } from "@dobble/shared/types";
 import type { GameState } from "./entities";
 
 export const mapGameStateToDto = (

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import seedrandom from "seedrandom";
 
-import { type Token } from "@dobble/shared";
+import type { Token } from "@dobble/shared/types";
 import { useSeed } from "./useSeed";
 
 export interface IEffects {

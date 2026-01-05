@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-import { type TokensPerCard } from "@dobble/shared";
+import type { TokensPerCard } from "@dobble/shared/types";
 
 export const createIconTransformComputer =
   (iconsAmount: TokensPerCard) =>

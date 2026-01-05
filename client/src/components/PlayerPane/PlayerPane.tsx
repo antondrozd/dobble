@@ -1,6 +1,6 @@
 import { Lightbulb } from "lucide-react";
 
-import type { Token, PlayerSlotDto as PlayerSlot } from "@dobble/shared";
+import type { Token, PlayerSlotDto as PlayerSlot } from "@dobble/shared/types";
 import Card from "@/components/Card";
 
 type Props = {

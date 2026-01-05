@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import * as R from "ramda";
 
-import { type Card, type Token, allCards, WIN_SCORE } from "@dobble/shared";
+import type { Card, Token } from "@dobble/shared/types";
+import { WIN_SCORE } from "@dobble/shared/constants";
+import { allCards } from "@dobble/shared/utils";
 import { getRandomItemsSet } from "@/utils";
 
 export interface IPlayer {

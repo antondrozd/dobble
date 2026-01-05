@@ -11,7 +11,7 @@ import { Server, Socket } from "socket.io";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
-} from "@dobble/shared";
+} from "@dobble/shared/types";
 import { RoomService } from "../room/room.service";
 import { GameService } from "./game.service";
 import { mapGameStateToDto } from "./game.mapper";

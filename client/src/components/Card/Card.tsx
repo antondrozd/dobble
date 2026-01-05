@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
-import { type Token, TOKENS_PER_CARD } from "@dobble/shared";
+import type { Token } from "@dobble/shared/types";
+import { TOKENS_PER_CARD } from "@dobble/shared/constants";
 import { useIconsTransform, useSeed } from "@/hooks";
 import { getRandomRotation, getTotalTokensAmount } from "@/utils";
 

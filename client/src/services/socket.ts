@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
-} from "@dobble/shared";
+} from "@dobble/shared/types";
 import { SERVER_URL } from "@/api";
 
 export type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;

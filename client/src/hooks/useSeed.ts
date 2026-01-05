@@ -1,4 +1,4 @@
-import { MAX_INT32 } from "@dobble/shared";
+import { MAX_INT32 } from "@dobble/shared/constants";
 import { create } from "zustand";
 
 interface ISeedStore {

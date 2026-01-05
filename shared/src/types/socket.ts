@@ -1,5 +1,5 @@
-import type { Token } from "./card.js";
-import type { GameStateDto } from "./game.js";
+import type { Token } from "./card";
+import type { GameStateDto } from "./game";
 
 export type ClientToServerEvents = {
   "game:join": (data: { roomId: string }) => void;

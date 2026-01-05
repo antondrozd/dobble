@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
-import { type Token, type GameStateDto as GameState } from "@dobble/shared";
+import type { Token, GameStateDto as GameState } from "@dobble/shared/types";
 import { createSocket, type GameSocket } from "@/services/socket";
 import { useSeed } from "./useSeed";
 import { createRoom } from "@/api";

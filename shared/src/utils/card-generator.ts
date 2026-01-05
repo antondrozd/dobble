@@ -1,5 +1,5 @@
-import type { Card, Token, TokensPerCard } from "../types/card.js";
-import { TOKENS_PER_CARD } from "../constants.js";
+import type { Card, Token, TokensPerCard } from "../types/card";
+import { TOKENS_PER_CARD } from "../constants";
 
 const generateTokenMatrix = (tokensPerCard: TokensPerCard): Token[][] => {
   const matrix: Token[][] = [];

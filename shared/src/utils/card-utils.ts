@@ -1,5 +1,5 @@
-import type { Card, Token } from "../types/card.js";
-import { allCards } from "./card-generator.js";
+import type { Card, Token } from "../types/card";
+import { allCards } from "./card-generator";
 
 export const getRandomCards = (
   count: number,
@@ -29,6 +29,7 @@ export const findMatchingToken = (card1: Card, card2: Card): Token => {
   for (const token of card1.tokens) {
     if (card2.tokens.includes(token)) {
       return token;
+      console.log();
     }
   }
 

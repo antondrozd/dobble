@@ -1,11 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import {
-  type Token,
-  WIN_SCORE,
-  getRandomCards,
-  findMatchingToken,
-  MAX_INT32,
-} from "@dobble/shared";
+import type { Token } from "@dobble/shared/types";
+import { WIN_SCORE, MAX_INT32 } from "@dobble/shared/constants";
+import { getRandomCards, findMatchingToken } from "@dobble/shared/utils";
 import type { GameState, PlayerSlot } from "./entities";
 
 @Injectable()
