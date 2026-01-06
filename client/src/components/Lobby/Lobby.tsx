@@ -1,20 +1,20 @@
-import { useSocketGame, usePlayerName } from "@/hooks";
+import { createRoom } from "@/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RefreshCw } from "lucide-react";
 
 export default function Lobby() {
   const navigate = useNavigate();
-  const { status, error, connect } = useSocketGame();
-  const { name, setName, regenerateName } = usePlayerName();
   const [joinRoomId, setJoinRoomId] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreateGame = () => {
-    void connect().then((roomId) => {
-      if (roomId) {
-        void navigate(`/room/${roomId}`);
-      }
-    });
+  const handleCreateGame = async () => {
+    setIsCreating(true);
+    try {
+      const roomId = await createRoom();
+      void navigate(`/room/${roomId}`);
+    } catch {
+      setIsCreating(false);
+    }
   };
 
   const handleJoinGame = () => {
@@ -29,37 +29,13 @@ export default function Lobby() {
         Dobble
       </h1>
 
-      {error && (
-        <p className="text-fun-red bg-fun-red/20 px-4 py-2 rounded-full backdrop-blur-sm">
-          {error}
-        </p>
-      )}
-      {status === "connecting" && (
+      {isCreating ? (
         <div className="w-12 h-12 border-4 border-white/30 border-t-fun-orange border-r-fun-red rounded-full animate-spin-fun" />
-      )}
-      {status === "disconnected" && (
+      ) : (
         <div className="flex flex-col items-center gap-6 animate-bounce-in">
-          <div className="flex items-center border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm focus-within:border-fun-purple focus-within:shadow-lg focus-within:shadow-fun-purple/30 transition-all">
-            <input
-              type="text"
-              placeholder="Your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="px-5 py-3 bg-transparent text-white placeholder-white/60 outline-none text-center text-lg font-medium"
-            />
-            <button
-              className="p-3 hover:bg-white/10 rounded-full transition-all"
-              onClick={regenerateName}
-              title="Generate new name"
-            >
-              <RefreshCw className="w-5 h-5 text-white/70 hover:text-white" />
-            </button>
-          </div>
-
           <button
-            className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+            className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
             onClick={handleCreateGame}
-            disabled={!name.trim()}
           >
             Create Game
           </button>

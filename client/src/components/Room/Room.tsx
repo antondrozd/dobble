@@ -1,6 +1,6 @@
-import { useSocketGame } from "@/hooks";
-import { useEffect } from "react";
+import { useSocketGame, usePlayerName } from "@/hooks";
 import { useParams, useNavigate } from "react-router-dom";
+import { RefreshCw } from "lucide-react";
 import { cn } from "@/utils/cn";
 import PlayerPane from "../PlayerPane";
 import OpponentCard from "../OpponentCard";
@@ -10,6 +10,7 @@ import ScoreBox from "../ScoreBox";
 export default function Room() {
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
+  const { name, setName, regenerateName } = usePlayerName();
   const {
     status,
     gameState,
@@ -22,11 +23,11 @@ export default function Room() {
     clearHint,
   } = useSocketGame();
 
-  useEffect(() => {
-    if (roomId && status === "disconnected") {
+  const handleJoin = () => {
+    if (roomId && name.trim()) {
       void connect(roomId);
     }
-  }, [roomId, status, connect]);
+  };
 
   const roomUrl = `${window.location.origin}/room/${roomId}`;
 
@@ -53,6 +54,42 @@ export default function Room() {
         >
           Back to Lobby
         </button>
+      </main>
+    );
+  }
+
+  if (status === "disconnected") {
+    return (
+      <main className="flex flex-col items-center justify-center h-dvh gap-6 p-4">
+        <h1 className="text-6xl font-black text-gradient drop-shadow-lg animate-bounce-in">
+          Dobble
+        </h1>
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-white/70">Enter name</p>
+          <div className="flex items-center border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm focus-within:border-fun-purple focus-within:shadow-lg focus-within:shadow-fun-purple/30 transition-all">
+            <input
+              type="text"
+              placeholder="Your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="px-5 py-3 bg-transparent text-white placeholder-white/60 outline-none text-center text-lg font-medium"
+            />
+            <button
+              className="p-3 hover:bg-white/10 rounded-full transition-all"
+              onClick={regenerateName}
+              title="Generate new name"
+            >
+              <RefreshCw className="w-5 h-5 text-white/70 hover:text-white" />
+            </button>
+          </div>
+          <button
+            className="px-8 py-4 bg-linear-to-r from-fun-teal to-fun-pink text-fun-purple text-xl font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+            onClick={handleJoin}
+            disabled={!name.trim()}
+          >
+            Join Game
+          </button>
+        </div>
       </main>
     );
   }
@@ -121,7 +158,9 @@ export default function Room() {
                 key={slot.id}
                 className={cn(
                   "flex justify-between items-center gap-8",
-                  slot.id === yourSlotId ? "text-gradient font-bold" : "text-white/80"
+                  slot.id === yourSlotId
+                    ? "text-gradient font-bold"
+                    : "text-white/80"
                 )}
               >
                 <span className="text-xl">{slot.name}</span>
