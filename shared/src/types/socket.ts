@@ -13,4 +13,5 @@ export type ServerToClientEvents = {
   "game:hint": (data: { token: Token }) => void;
   "game:full": () => void;
   "room:not-found": () => void;
+  "room:closed": () => void;
 };

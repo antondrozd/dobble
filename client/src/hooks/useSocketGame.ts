@@ -54,6 +54,11 @@ export const useSocketGame = () => {
       setError("Room not found");
     });
 
+    socket.on("room:closed", () => {
+      setError("Room was closed due to inactivity");
+      setGameState(null);
+    });
+
     return () => {
       socket.disconnect();
     };

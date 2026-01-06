@@ -7,12 +7,14 @@ import {
   ConnectedSocket,
   MessageBody,
 } from "@nestjs/websockets";
+import { OnEvent } from "@nestjs/event-emitter";
 import { Server, Socket } from "socket.io";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from "@dobble/shared/types";
 import { RoomService } from "../room/room.service";
+import { RoomCleanupEvent } from "../room/events";
 import { GameService } from "./game.service";
 import { mapGameStateToDto } from "./game.mapper";
 
@@ -142,5 +144,19 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (!socketId) continue;
       this.server.to(socketId).emit("game:state", mapGameStateToDto(state, id));
     }
+  }
+
+  @OnEvent(RoomCleanupEvent.event)
+  handleRoomCleanup(event: RoomCleanupEvent) {
+    this.server.to(event.roomId).emit("room:closed");
+    this.server.in(event.roomId).disconnectSockets();
+
+    for (const [socketId, roomId] of this.socketRooms) {
+      if (roomId === event.roomId) {
+        this.socketRooms.delete(socketId);
+      }
+    }
+
+    console.log(`Notified and disconnected sockets in room: ${event.roomId}`);
   }
 }
