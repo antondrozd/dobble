@@ -35,7 +35,7 @@ export default function Lobby() {
         <div className="flex flex-col items-center gap-6 animate-bounce-in">
           <button
             className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
-            onClick={handleCreateGame}
+            onClick={() => void handleCreateGame()}
           >
             Create Game
           </button>
