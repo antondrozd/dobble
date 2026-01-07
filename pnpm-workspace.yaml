@@ -1,7 +1,6 @@
 packages:
   - "shared"
   - "client"
-  # - "dobble.express(deprecated)"
   - "server"
 
 injectWorkspacePackages: true
