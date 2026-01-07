@@ -10,6 +10,22 @@ on:
       - pnpm-lock.yaml
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint --filter=@dobble/client
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +43,7 @@ jobs:
       - run: pnpm test --filter=@dobble/client --filter=@dobble/shared
 
   build:
-    needs: test
+    needs: [lint, test]
     runs-on: ubuntu-latest
     permissions:
       contents: read
