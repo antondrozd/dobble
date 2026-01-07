@@ -29,16 +29,28 @@ type IconEntry = {
   Icon: React.ComponentType<IconProps>;
 };
 
+const GRID_COLUMNS = 8;
+const GRID_ROWS = 8;
+
 const mapFileIconsPack = (tokenPack: IconsPack): IconEntry[] =>
   R.range(0, tokenPack.amount).map((i) => {
-    const src = `/icon-packs/${tokenPack.name}/icon-${i}.${tokenPack.type}`;
+    const spriteSrc = `/icon-packs/${tokenPack.name}/sprite.png`;
+    const col = i % GRID_COLUMNS;
+    const row = Math.floor(i / GRID_COLUMNS);
+    const posX = col === 0 ? 0 : (col / (GRID_COLUMNS - 1)) * 100;
+    const posY = row === 0 ? 0 : (row / (GRID_ROWS - 1)) * 100;
 
     return {
       id: i,
       Icon: (props: IconProps) => (
-        <div {...props}>
-          <img src={src} className="w-full h-full" alt="" />
-        </div>
+        <div
+          {...props}
+          style={{
+            backgroundImage: `url(${spriteSrc})`,
+            backgroundPosition: `${posX}% ${posY}%`,
+            backgroundSize: `${GRID_COLUMNS * 100}%`,
+          }}
+        />
       ),
     };
   });
