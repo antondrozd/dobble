@@ -17,10 +17,10 @@ export default function Room() {
     error,
     connect,
     submitAnswer,
-    requestHint,
+    requestSkip,
     hint,
     resetGame,
-    clearHint,
+    handleSkipAnimationComplete,
   } = useSocketGame();
 
   const handleJoin = () => {
@@ -189,13 +189,13 @@ export default function Room() {
         />
       )}
       <OpponentCard />
-      <Card tokens={commonCard.tokens} />
+      <Card tokens={commonCard.tokens} hint={hint} />
       <PlayerPane
         card={yourSlot.card}
         hint={hint}
         onTokenClick={submitAnswer}
-        onHintClick={requestHint}
-        onHintRevealed={clearHint}
+        onSkipClick={requestSkip}
+        onHintRevealed={handleSkipAnimationComplete}
       />
       <ScoreBox
         name={yourSlot.name}

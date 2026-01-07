@@ -35,7 +35,7 @@ describe("GameService", () => {
 
   describe("addPlayer", () => {
     it("assigns player to first empty slot", () => {
-      const slotId = service.addPlayer("socket-1");
+      const slotId = service.addPlayer("socket-1", "Player 1");
       expect(slotId).toBe(1);
 
       const slot = service.getSlotBySocketId("socket-1");
@@ -44,30 +44,36 @@ describe("GameService", () => {
     });
 
     it("assigns second player to second slot", () => {
-      service.addPlayer("socket-1");
-      const slotId = service.addPlayer("socket-2");
+      service.addPlayer("socket-1", "Player 1");
+      const slotId = service.addPlayer("socket-2", "Player 2");
       expect(slotId).toBe(2);
     });
 
     it("activates game when both players connected", () => {
-      service.addPlayer("socket-1");
+      service.addPlayer("socket-1", "Player 1");
       expect(service.getState().isGameActive).toBe(false);
 
-      service.addPlayer("socket-2");
+      service.addPlayer("socket-2", "Player 2");
       expect(service.getState().isGameActive).toBe(true);
     });
 
     it("returns null when room is full", () => {
-      service.addPlayer("socket-1");
-      service.addPlayer("socket-2");
-      const result = service.addPlayer("socket-3");
+      service.addPlayer("socket-1", "Player 1");
+      service.addPlayer("socket-2", "Player 2");
+      const result = service.addPlayer("socket-3", "Player 3");
       expect(result).toBeNull();
+    });
+
+    it("stores player name in slot", () => {
+      service.addPlayer("socket-1", "Alice");
+      const slot = service.getSlotBySocketId("socket-1");
+      expect(slot?.name).toBe("Alice");
     });
   });
 
   describe("removePlayer", () => {
     it("removes player from slot", () => {
-      service.addPlayer("socket-1");
+      service.addPlayer("socket-1", "Player 1");
       service.removePlayer("socket-1");
 
       const slot = service.getSlotBySocketId("socket-1");
@@ -75,8 +81,8 @@ describe("GameService", () => {
     });
 
     it("deactivates game when player leaves", () => {
-      service.addPlayer("socket-1");
-      service.addPlayer("socket-2");
+      service.addPlayer("socket-1", "Player 1");
+      service.addPlayer("socket-2", "Player 2");
       expect(service.getState().isGameActive).toBe(true);
 
       service.removePlayer("socket-1");
@@ -84,7 +90,7 @@ describe("GameService", () => {
     });
 
     it("returns slot id when player removed", () => {
-      service.addPlayer("socket-1");
+      service.addPlayer("socket-1", "Player 1");
       const result = service.removePlayer("socket-1");
       expect(result).toBe(1);
     });
@@ -97,8 +103,8 @@ describe("GameService", () => {
 
   describe("handleAnswerAttempt", () => {
     beforeEach(() => {
-      service.addPlayer("socket-1");
-      service.addPlayer("socket-2");
+      service.addPlayer("socket-1", "Player 1");
+      service.addPlayer("socket-2", "Player 2");
     });
 
     it("returns null if game not active", () => {
@@ -150,10 +156,10 @@ describe("GameService", () => {
     });
   });
 
-  describe("getHint", () => {
+  describe("skip", () => {
     beforeEach(() => {
-      service.addPlayer("socket-1");
-      service.addPlayer("socket-2");
+      service.addPlayer("socket-1", "Player 1");
+      service.addPlayer("socket-2", "Player 2");
     });
 
     it("returns correct matching token", () => {
@@ -161,28 +167,52 @@ describe("GameService", () => {
       const slot = service.getSlotBySocketId("socket-1")!;
       const expected = findMatchingToken(slot.card, state.commonCard);
 
-      const hint = service.getHint("socket-1");
-      expect(hint).toBe(expected);
+      const token = service.skip("socket-1");
+      expect(token).toBe(expected);
     });
 
-    it("decrements score when hint requested", () => {
+    it("decrements score when score is positive", () => {
+      const slot = service.getSlotBySocketId("socket-1")!;
+      slot.score = 3;
+
+      service.skip("socket-1");
+      expect(slot.score).toBe(2);
+    });
+
+    it("does not decrement score below zero", () => {
       const slot = service.getSlotBySocketId("socket-1")!;
       expect(slot.score).toBe(0);
 
-      service.getHint("socket-1");
-      expect(slot.score).toBe(-1);
+      service.skip("socket-1");
+      expect(slot.score).toBe(0);
+    });
+
+    it("assigns a new card to the player", () => {
+      const slot = service.getSlotBySocketId("socket-1")!;
+      const oldCard = slot.card;
+
+      service.skip("socket-1");
+      expect(slot.card).not.toEqual(oldCard);
+    });
+
+    it("does not change the common card", () => {
+      const state = service.getState();
+      const oldCommonCard = state.commonCard;
+
+      service.skip("socket-1");
+      expect(state.commonCard).toEqual(oldCommonCard);
     });
 
     it("returns null for unknown socket", () => {
-      const hint = service.getHint("unknown");
-      expect(hint).toBeNull();
+      const token = service.skip("unknown");
+      expect(token).toBeNull();
     });
   });
 
   describe("reset", () => {
     it("resets scores to zero", () => {
-      service.addPlayer("socket-1");
-      service.addPlayer("socket-2");
+      service.addPlayer("socket-1", "Player 1");
+      service.addPlayer("socket-2", "Player 2");
 
       const slot = service.getSlotBySocketId("socket-1")!;
       slot.score = 10;
@@ -192,8 +222,8 @@ describe("GameService", () => {
     });
 
     it("preserves connected players", () => {
-      service.addPlayer("socket-1");
-      service.addPlayer("socket-2");
+      service.addPlayer("socket-1", "Player 1");
+      service.addPlayer("socket-2", "Player 2");
 
       service.reset();
 
@@ -202,8 +232,8 @@ describe("GameService", () => {
     });
 
     it("clears winner", () => {
-      service.addPlayer("socket-1");
-      service.addPlayer("socket-2");
+      service.addPlayer("socket-1", "Player 1");
+      service.addPlayer("socket-2", "Player 2");
 
       const slot = service.getSlotBySocketId("socket-1")!;
       slot.score = WIN_SCORE - 1;

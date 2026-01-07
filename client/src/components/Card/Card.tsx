@@ -17,20 +17,18 @@ type BaseProps = {
   className?: string;
 };
 
-type HintProps =
-  | { answer?: never; onAnswerRevealed?: never }
-  | {
-      answer?: Token;
-      onAnswerRevealed: () => void;
-    };
+type HintProps = {
+  hint?: Token;
+  onHintRevealed?: () => void;
+};
 
 type Props = BaseProps & HintProps;
 
 const Card = ({
   tokens,
   onTokenClick,
-  answer,
-  onAnswerRevealed,
+  hint,
+  onHintRevealed,
   className,
 }: Props) => {
   const iconEffects = useIconsTransform(tokens);
@@ -61,8 +59,8 @@ const Card = ({
           <div
             key={token}
             onClick={() => onTokenClick?.(token)}
-            onAnimationEnd={answer === token ? onAnswerRevealed : undefined}
-            className={cn("absolute top-1/2 left-1/2 w-[15%] h-[15%]", answer === token && "animate-flash")}
+            onAnimationEnd={hint === token ? onHintRevealed : undefined}
+            className={cn("absolute top-1/2 left-1/2 w-[15%] h-[15%]", hint === token && "animate-flash")}
             style={transformStyle}
           >
             <Icon

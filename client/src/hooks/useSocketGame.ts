@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 
 import type { Token, GameStateDto as GameState } from "@dobble/shared/types";
 import { createSocket, type GameSocket } from "@/services/socket";
@@ -13,10 +19,37 @@ export const useSocketGame = () => {
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
   const [roomId, setRoomId] = useState<string | null>(null);
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [hint, setHint] = useState<Token | null>(null);
+  const [pendingState, setPendingState] = useState<GameState | null>(null);
+  const [hint, setHint] = useState<Token>();
+  const [isSkipping, setIsSkipping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const setSeed = useSeed((state) => state.setSeed);
   const name = usePlayerName((state) => state.name);
+
+  const handleGameState = useEffectEvent((state: GameState) => {
+    setSeed(state.seed);
+
+    if (isSkipping) {
+      setPendingState(state);
+      return;
+    }
+
+    setGameState((prev) => {
+      const prevSlot = prev?.slots.find((s) => s.id === prev.yourSlotId);
+      const newSlot = state.slots.find((s) => s.id === state.yourSlotId);
+
+      if (prevSlot?.card.id !== newSlot?.card.id) {
+        setHint(undefined);
+      }
+
+      return state;
+    });
+  });
+
+  const handleGameSkip = useEffectEvent(({ token }: { token: Token }) => {
+    setHint(token);
+    setIsSkipping(true);
+  });
 
   useEffect(() => {
     const socket = createSocket();
@@ -26,25 +59,8 @@ export const useSocketGame = () => {
       setStatus("disconnected");
     });
 
-    socket.on("game:state", (state) => {
-      setSeed(state.seed);
-
-      setGameState((prev) => {
-        const prevSlot = prev?.slots.find((s) => s.id === prev.yourSlotId);
-        const newSlot = state.slots.find((s) => s.id === state.yourSlotId);
-
-        // Clear hint only when card changes
-        if (prevSlot?.card.id !== newSlot?.card.id) {
-          setHint(null);
-        }
-
-        return state;
-      });
-    });
-
-    socket.on("game:hint", ({ token }) => {
-      setHint(token);
-    });
+    socket.on("game:state", handleGameState);
+    socket.on("game:skip", handleGameSkip);
 
     socket.on("game:full", () => {
       setError("Room is full");
@@ -62,7 +78,7 @@ export const useSocketGame = () => {
     return () => {
       socket.disconnect();
     };
-  }, [setSeed]);
+  }, []);
 
   const connect = useCallback(
     async (existingRoomId?: string): Promise<string | null> => {
@@ -101,17 +117,20 @@ export const useSocketGame = () => {
     socketRef.current?.emit("game:answer", { token });
   }, []);
 
-  const requestHint = useCallback(() => {
-    socketRef.current?.emit("game:hint");
+  const requestSkip = useCallback(() => {
+    socketRef.current?.emit("game:skip");
   }, []);
 
   const resetGame = useCallback(() => {
     socketRef.current?.emit("game:reset");
   }, []);
 
-  const clearHint = useCallback(() => {
-    setHint(null);
-  }, []);
+  const handleSkipAnimationComplete = useCallback(() => {
+    setGameState(pendingState);
+    setPendingState(null);
+    setHint(undefined);
+    setIsSkipping(false);
+  }, [pendingState]);
 
   const disconnect = useCallback(() => {
     socketRef.current?.disconnect();
@@ -129,8 +148,8 @@ export const useSocketGame = () => {
     connect,
     disconnect,
     submitAnswer,
-    requestHint,
+    requestSkip,
     resetGame,
-    clearHint,
+    handleSkipAnimationComplete,
   };
 };

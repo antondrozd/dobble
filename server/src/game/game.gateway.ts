@@ -100,15 +100,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage("game:hint")
+  @SubscribeMessage("game:skip")
   handleHint(@ConnectedSocket() client: Socket) {
     const ctx = this.getSocketRoom(client.id);
     if (!ctx) return;
 
-    const token = ctx.game.getHint(client.id);
+    const token = ctx.game.skip(client.id);
     if (token !== null) {
       this.roomService.updateActivity(ctx.roomId);
-      client.emit("game:hint", { token });
+      client.emit("game:skip", { token });
       this.broadcastState(ctx.game);
     }
   }

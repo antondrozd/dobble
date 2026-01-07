@@ -115,14 +115,23 @@ export class GameService {
     return this.state;
   }
 
-  getHint(socketId: string): Token | null {
+  skip(socketId: string): Token {
     const slot = this.getSlotBySocketId(socketId);
     if (!slot) {
       return null;
     }
 
-    slot.score -= 1;
+    if (slot.score > 0) {
+      slot.score -= 1;
+    }
 
-    return findMatchingToken(slot.card, this.state.commonCard);
+    const matchingToken = findMatchingToken(slot.card, this.state.commonCard);
+    const usedCardIds = this.state.slots.map((s) => s.card.id);
+    usedCardIds.push(this.state.commonCard.id);
+
+    const [newCard] = getRandomCards(1, usedCardIds);
+    slot.card = newCard;
+
+    return matchingToken;
   }
 }
