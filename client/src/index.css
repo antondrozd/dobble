@@ -21,6 +21,7 @@
   --color-primary-soft: var(--color-violet-400);
   --color-secondary: var(--color-violet-300);
   --color-secondary-soft: var(--color-fuchsia-400);
+  --color-secondary-foreground: var(--color-violet-600);
   --color-accent: var(--color-violet-500);
   --color-error: var(--color-pink-400);
 

@@ -142,7 +142,7 @@ export default function Room() {
             </button>
           </div>
           <button
-            className="px-8 py-4 bg-linear-to-r from-secondary to-secondary-soft text-accent text-xl font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+            className="px-8 py-4 bg-linear-to-r from-secondary to-secondary-soft text-secondary-foreground text-xl font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
             onClick={handleJoin}
             disabled={!name.trim()}
           >
@@ -178,7 +178,7 @@ export default function Room() {
             {roomUrl}
           </code>
           <button
-            className="px-6 py-3 bg-linear-to-r from-secondary to-secondary-soft text-accent font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all"
+            className="px-6 py-3 bg-linear-to-r from-secondary to-secondary-soft text-secondary-foreground font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all"
             onClick={handleCopyUrl}
           >
             Copy Link

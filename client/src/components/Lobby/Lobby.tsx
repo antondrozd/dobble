@@ -51,7 +51,7 @@ export default function Lobby() {
               className="px-5 py-3 border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm text-white placeholder-white/60 outline-none focus:border-primary-soft focus:shadow-lg focus:shadow-primary-soft/30 transition-all"
             />
             <button
-              className="px-6 py-3 bg-linear-to-r from-secondary to-secondary-soft text-accent font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-linear-to-r from-secondary to-secondary-soft text-secondary-foreground font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
               onClick={handleJoinGame}
               disabled={!joinRoomId}
             >
