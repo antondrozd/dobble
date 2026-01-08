@@ -2,7 +2,7 @@ import type { Token } from "./card";
 import type { GameStateDto } from "./game";
 
 export type ClientToServerEvents = {
-  "game:join": (data: { roomId: string; name: string }) => void;
+  "game:join": (data: { roomId: string; name: string; playerId?: string }) => void;
   "game:answer": (data: { token: Token }) => void;
   "game:skip": () => void;
   "game:reset": () => void;

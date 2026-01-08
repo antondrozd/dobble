@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useSocketGame, usePlayerName, useGameSounds } from "@/hooks";
+import { useSocketGame, usePlayer, useGameSounds } from "@/hooks";
 import { useParams, useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/utils/cn";
@@ -11,7 +11,7 @@ import ScoreBox from "../ScoreBox";
 export default function Room() {
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
-  const { name, setName, regenerateName } = usePlayerName();
+  const { id: playerId, name, setName, regenerateName } = usePlayer();
   const {
     status,
     gameState,
@@ -39,8 +39,16 @@ export default function Room() {
   const yourSlotId = gameState?.yourSlotId;
   const yourScore = gameState?.slots.find((s) => s.id === yourSlotId)?.score;
   const winner = gameState?.winner;
+  const isGameActive = gameState?.isGameActive;
 
-  // Play success/error on score change
+  // Auto-rejoin on page refresh if player has stored ID
+  useEffect(() => {
+    if (status !== "disconnected") return;
+    if (!roomId || !playerId) return;
+
+    void connect(roomId);
+  }, [status, roomId, playerId, connect]);
+
   useEffect(() => {
     if (yourScore === undefined) return;
 
@@ -54,7 +62,6 @@ export default function Room() {
     prevScoreRef.current = yourScore;
   }, [yourScore, playSuccess, playError]);
 
-  // Play win/lose on game end
   useEffect(() => {
     if (!winner || prevWinnerRef.current === winner) return;
 
@@ -66,8 +73,6 @@ export default function Room() {
     prevWinnerRef.current = winner;
   }, [winner, yourSlotId, playWin, playLose]);
 
-  // Background music
-  const isGameActive = gameState?.isGameActive;
   useEffect(() => {
     if (isGameActive && !winner) {
       playBackground();
@@ -222,7 +227,7 @@ export default function Room() {
                     : "text-white/80"
                 )}
               >
-                <span className="text-xl">{slot.name}</span>
+                <span className="text-xl">{slot.player.name}</span>
                 <span className="text-3xl font-black">{slot.score}</span>
               </div>
             ))}
@@ -242,7 +247,7 @@ export default function Room() {
     <main className="relative flex flex-col items-center justify-center gap-4 h-dvh p-[2dvh] box-border overflow-hidden">
       {opponentSlot && (
         <ScoreBox
-          name={opponentSlot.name}
+          name={opponentSlot.player.name}
           score={opponentSlot.score}
           className="absolute top-4 left-4"
         />
@@ -257,7 +262,7 @@ export default function Room() {
         onHintRevealed={handleSkipAnimationComplete}
       />
       <ScoreBox
-        name={yourSlot.name}
+        name={yourSlot.player.name}
         score={yourSlot.score}
         className="absolute bottom-4 right-4"
       />

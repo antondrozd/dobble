@@ -9,7 +9,7 @@ import {
 import type { Token, GameStateDto as GameState } from "@dobble/shared/types";
 import { createSocket, type GameSocket } from "@/services/socket";
 import { useSeed } from "./useSeed";
-import { usePlayerName } from "./usePlayerName";
+import { usePlayer } from "./usePlayer";
 import { createRoom } from "@/api";
 
 type ConnectionStatus = "disconnected" | "connecting" | "connected" | "error";
@@ -24,10 +24,11 @@ export const useSocketGame = () => {
   const [isSkipping, setIsSkipping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const setSeed = useSeed((state) => state.setSeed);
-  const name = usePlayerName((state) => state.name);
+  const { id: playerId, name: playerName, setId: setPlayerId } = usePlayer();
 
   const handleGameState = useEffectEvent((state: GameState) => {
     setSeed(state.seed);
+    setPlayerId(state.yourPlayerId);
 
     if (isSkipping) {
       setPendingState(state);
@@ -92,12 +93,18 @@ export const useSocketGame = () => {
         const socket = socketRef.current;
         if (!socket) return null;
 
+        const joinPayload = {
+          roomId: id,
+          name: playerName,
+          playerId: playerId ?? undefined,
+        };
+
         if (socket.connected) {
-          socket.emit("game:join", { roomId: id, name });
+          socket.emit("game:join", joinPayload);
           setStatus("connected");
         } else {
           socket.once("connect", () => {
-            socket.emit("game:join", { roomId: id, name });
+            socket.emit("game:join", joinPayload);
             setStatus("connected");
           });
           socket.connect();
@@ -110,7 +117,7 @@ export const useSocketGame = () => {
         return null;
       }
     },
-    [name]
+    [playerName, playerId]
   );
 
   const submitAnswer = useCallback((token: Token) => {

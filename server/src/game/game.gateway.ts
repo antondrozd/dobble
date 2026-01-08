@@ -62,26 +62,26 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() data: EventPayload<"game:join">,
   ) {
-    const entry = this.roomService.getRoom(data.roomId);
-    if (!entry) {
+    const room = this.roomService.getRoom(data.roomId);
+    if (!room) {
       client.emit("room:not-found");
       return;
     }
 
-    const slotId = entry.game.addPlayer(client.id, data.name);
-    if (slotId === null) {
+    const { roomId, ...joinData } = data;
+
+    const slot = room.game.joinPlayer(client.id, joinData);
+    if (!slot) {
       client.emit("game:full");
       return;
     }
 
-    this.socketRooms.set(client.id, data.roomId);
-    client.join(data.roomId);
-    this.roomService.updateActivity(data.roomId);
+    this.socketRooms.set(client.id, roomId);
+    client.join(roomId);
+    this.roomService.updateActivity(roomId);
 
-    console.log(
-      `Player joined room ${data.roomId} slot ${slotId}: ${client.id}`,
-    );
-    this.broadcastState(entry.game);
+    console.log(`Player joined room ${roomId} slot ${slot.slotId}: ${client.id}`);
+    this.broadcastState(room.game);
   }
 
   @SubscribeMessage("game:answer")

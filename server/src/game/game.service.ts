@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { randomUUID } from "crypto";
 import type { Token } from "@dobble/shared/types";
 import { WIN_SCORE, MAX_INT32 } from "@dobble/shared/constants";
 import { getRandomCards, findMatchingToken } from "@dobble/shared/utils";
@@ -17,8 +18,24 @@ export class GameService {
 
     return {
       slots: [
-        { id: 1, name: "", socketId: null, card: card1, score: 0, currentCardMistakes: 0 },
-        { id: 2, name: "", socketId: null, card: card2, score: 0, currentCardMistakes: 0 },
+        {
+          id: 1,
+          playerId: null,
+          name: null,
+          socketId: null,
+          card: card1,
+          score: 0,
+          currentCardMistakes: 0,
+        },
+        {
+          id: 2,
+          playerId: null,
+          name: null,
+          socketId: null,
+          card: card2,
+          score: 0,
+          currentCardMistakes: 0,
+        },
       ],
       commonCard,
       winner: null,
@@ -31,21 +48,46 @@ export class GameService {
     return this.state.slots.find((s) => s.socketId === socketId) ?? null;
   }
 
-  addPlayer(socketId: string, name: string): number | null {
-    const emptySlot = this.state.slots.find((s) => s.socketId === null);
+  getSlotByPlayerId(playerId: string): PlayerSlot | null {
+    return this.state.slots.find((s) => s.playerId === playerId) ?? null;
+  }
+
+  joinPlayer(
+    socketId: string,
+    data: { name: string; playerId?: string },
+  ): { slotId: number; playerId: string } | null {
+    // Try to rejoin by playerId first
+    if (data.playerId) {
+      const existingSlot = this.state.slots.find(
+        (s) => s.playerId === data.playerId,
+      );
+      if (existingSlot) {
+        existingSlot.socketId = socketId;
+        this.updateGameActive();
+        return { slotId: existingSlot.id, playerId: existingSlot.playerId };
+      }
+    }
+
+    // Join as new player
+    const emptySlot = this.state.slots.find((s) => s.playerId === null);
     if (!emptySlot) {
       return null;
     }
 
+    const newPlayerId = randomUUID();
+    emptySlot.playerId = newPlayerId;
+    emptySlot.name = data.name;
     emptySlot.socketId = socketId;
-    emptySlot.name = name;
 
+    this.updateGameActive();
+    return { slotId: emptySlot.id, playerId: newPlayerId };
+  }
+
+  private updateGameActive(): void {
     const allConnected = this.state.slots.every((s) => s.socketId !== null);
     if (allConnected) {
       this.state.isGameActive = true;
     }
-
-    return emptySlot.id;
   }
 
   removePlayer(socketId: string): number | null {
@@ -101,6 +143,7 @@ export class GameService {
 
   reset(): void {
     const players = this.state.slots.map((s) => ({
+      playerId: s.playerId,
       socketId: s.socketId,
       name: s.name,
     }));
@@ -108,6 +151,7 @@ export class GameService {
     this.state = this.createInitialState();
 
     this.state.slots.forEach((slot, index) => {
+      slot.playerId = players[index].playerId;
       slot.socketId = players[index].socketId;
       slot.name = players[index].name;
     });

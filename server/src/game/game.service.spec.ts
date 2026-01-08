@@ -33,9 +33,9 @@ describe("GameService", () => {
     });
   });
 
-  describe("addPlayer", () => {
+  describe("joinPlayer", () => {
     it("assigns player to first empty slot", () => {
-      const slotId = service.addPlayer("socket-1", "Player 1");
+      const { slotId } = service.joinPlayer("socket-1", { name: "Player 1" });
       expect(slotId).toBe(1);
 
       const slot = service.getSlotBySocketId("socket-1");
@@ -44,36 +44,63 @@ describe("GameService", () => {
     });
 
     it("assigns second player to second slot", () => {
-      service.addPlayer("socket-1", "Player 1");
-      const slotId = service.addPlayer("socket-2", "Player 2");
+      service.joinPlayer("socket-1", { name: "Player 1" });
+      const { slotId } = service.joinPlayer("socket-2", { name: "Player 2" });
       expect(slotId).toBe(2);
     });
 
     it("activates game when both players connected", () => {
-      service.addPlayer("socket-1", "Player 1");
+      service.joinPlayer("socket-1", { name: "Player 1" });
       expect(service.getState().isGameActive).toBe(false);
 
-      service.addPlayer("socket-2", "Player 2");
+      service.joinPlayer("socket-2", { name: "Player 2" });
       expect(service.getState().isGameActive).toBe(true);
     });
 
     it("returns null when room is full", () => {
-      service.addPlayer("socket-1", "Player 1");
-      service.addPlayer("socket-2", "Player 2");
-      const result = service.addPlayer("socket-3", "Player 3");
+      service.joinPlayer("socket-1", { name: "Player 1" });
+      service.joinPlayer("socket-2", { name: "Player 2" });
+
+      const result = service.joinPlayer("socket-3", { name: "Player 3" });
       expect(result).toBeNull();
     });
 
     it("stores player name in slot", () => {
-      service.addPlayer("socket-1", "Alice");
+      service.joinPlayer("socket-1", { name: "Alice" });
       const slot = service.getSlotBySocketId("socket-1");
       expect(slot?.name).toBe("Alice");
+    });
+
+    it("generates playerId for new player", () => {
+      const { playerId } = service.joinPlayer("socket-1", { name: "Player 1" });
+      expect(playerId).toBeDefined();
+      expect(typeof playerId).toBe("string");
+    });
+
+    it("rejoins existing slot by playerId", () => {
+      const { playerId } = service.joinPlayer("socket-1", { name: "Player 1" });
+      service.removePlayer("socket-1");
+
+      const { slotId } = service.joinPlayer("socket-2", {
+        name: "Player 1",
+        playerId,
+      });
+      expect(slotId).toBe(1);
+      expect(service.getSlotBySocketId("socket-2")).not.toBeNull();
+    });
+
+    it("falls back to new slot if playerId not found", () => {
+      const { slotId } = service.joinPlayer("socket-1", {
+        name: "Player 1",
+        playerId: "non-existent-id",
+      });
+      expect(slotId).toBe(1);
     });
   });
 
   describe("removePlayer", () => {
     it("removes player from slot", () => {
-      service.addPlayer("socket-1", "Player 1");
+      service.joinPlayer("socket-1", { name: "Player 1" });
       service.removePlayer("socket-1");
 
       const slot = service.getSlotBySocketId("socket-1");
@@ -81,8 +108,8 @@ describe("GameService", () => {
     });
 
     it("deactivates game when player leaves", () => {
-      service.addPlayer("socket-1", "Player 1");
-      service.addPlayer("socket-2", "Player 2");
+      service.joinPlayer("socket-1", { name: "Player 1" });
+      service.joinPlayer("socket-2", { name: "Player 2" });
       expect(service.getState().isGameActive).toBe(true);
 
       service.removePlayer("socket-1");
@@ -90,7 +117,7 @@ describe("GameService", () => {
     });
 
     it("returns slot id when player removed", () => {
-      service.addPlayer("socket-1", "Player 1");
+      service.joinPlayer("socket-1", { name: "Player 1" });
       const result = service.removePlayer("socket-1");
       expect(result).toBe(1);
     });
@@ -103,8 +130,8 @@ describe("GameService", () => {
 
   describe("handleAnswerAttempt", () => {
     beforeEach(() => {
-      service.addPlayer("socket-1", "Player 1");
-      service.addPlayer("socket-2", "Player 2");
+      service.joinPlayer("socket-1", { name: "Player 1" });
+      service.joinPlayer("socket-2", { name: "Player 2" });
     });
 
     it("returns null if game not active", () => {
@@ -198,8 +225,8 @@ describe("GameService", () => {
 
   describe("skip", () => {
     beforeEach(() => {
-      service.addPlayer("socket-1", "Player 1");
-      service.addPlayer("socket-2", "Player 2");
+      service.joinPlayer("socket-1", { name: "Player 1" });
+      service.joinPlayer("socket-2", { name: "Player 2" });
     });
 
     it("returns correct matching token", () => {
@@ -251,8 +278,8 @@ describe("GameService", () => {
 
   describe("reset", () => {
     it("resets scores to zero", () => {
-      service.addPlayer("socket-1", "Player 1");
-      service.addPlayer("socket-2", "Player 2");
+      service.joinPlayer("socket-1", { name: "Player 1" });
+      service.joinPlayer("socket-2", { name: "Player 2" });
 
       const slot = service.getSlotBySocketId("socket-1")!;
       slot.score = 10;
@@ -262,8 +289,8 @@ describe("GameService", () => {
     });
 
     it("preserves connected players", () => {
-      service.addPlayer("socket-1", "Player 1");
-      service.addPlayer("socket-2", "Player 2");
+      service.joinPlayer("socket-1", { name: "Player 1" });
+      service.joinPlayer("socket-2", { name: "Player 2" });
 
       service.reset();
 
@@ -272,8 +299,8 @@ describe("GameService", () => {
     });
 
     it("clears winner", () => {
-      service.addPlayer("socket-1", "Player 1");
-      service.addPlayer("socket-2", "Player 2");
+      service.joinPlayer("socket-1", { name: "Player 1" });
+      service.joinPlayer("socket-2", { name: "Player 2" });
 
       const slot = service.getSlotBySocketId("socket-1")!;
       slot.score = WIN_SCORE - 1;
