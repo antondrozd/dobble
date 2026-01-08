@@ -92,10 +92,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const ctx = this.getSocketRoom(client.id);
     if (!ctx) return;
 
-    const slotId = ctx.game.handleAnswerAttempt(client.id, data.token);
-    if (slotId !== null) {
+    const result = ctx.game.handleAnswerAttempt(client.id, data.token);
+    if (result !== null) {
       this.roomService.updateActivity(ctx.roomId);
-      console.log(`Room ${ctx.roomId} slot ${slotId} answered correctly`);
+      console.log(
+        `Room ${ctx.roomId} slot ${result.slotId} answered ${result.correct ? "correctly" : "incorrectly"}`,
+      );
       this.broadcastState(ctx.game);
     }
   }

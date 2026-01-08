@@ -117,9 +117,49 @@ describe("GameService", () => {
       expect(result).toBeNull();
     });
 
-    it("returns null for wrong answer", () => {
+    it("returns correct: false for wrong answer", () => {
       const result = service.handleAnswerAttempt("socket-1", -999);
-      expect(result).toBeNull();
+      expect(result).toEqual({ slotId: 1, correct: false });
+    });
+
+    it("does not decrement score on first wrong answer (free mistake)", () => {
+      const slot = service.getSlotBySocketId("socket-1")!;
+      slot.score = 3;
+
+      service.handleAnswerAttempt("socket-1", -999);
+      expect(slot.score).toBe(3);
+    });
+
+    it("decrements score on second wrong answer", () => {
+      const slot = service.getSlotBySocketId("socket-1")!;
+      slot.score = 3;
+
+      service.handleAnswerAttempt("socket-1", -999); // free mistake
+      service.handleAnswerAttempt("socket-1", -999); // score decreases
+      expect(slot.score).toBe(2);
+    });
+
+    it("does not decrement score below zero on wrong answer", () => {
+      const slot = service.getSlotBySocketId("socket-1")!;
+      expect(slot.score).toBe(0);
+
+      service.handleAnswerAttempt("socket-1", -999); // free mistake
+      service.handleAnswerAttempt("socket-1", -999); // would decrement, but already 0
+      expect(slot.score).toBe(0);
+    });
+
+    it("resets currentCardMistakes after correct answer", () => {
+      const slot = service.getSlotBySocketId("socket-1")!;
+      const state = service.getState();
+      slot.score = 3;
+
+      service.handleAnswerAttempt("socket-1", -999); // first mistake
+      expect(slot.currentCardMistakes).toBe(1);
+
+      const correctToken = findMatchingToken(slot.card, state.commonCard);
+      service.handleAnswerAttempt("socket-1", correctToken); // correct answer
+
+      expect(slot.currentCardMistakes).toBe(0);
     });
 
     it("increments score for correct answer", () => {

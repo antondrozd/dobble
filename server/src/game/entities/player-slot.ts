@@ -6,4 +6,5 @@ export type PlayerSlot = {
   socketId: string | null;
   card: Card;
   score: number;
+  currentCardMistakes: number;
 };

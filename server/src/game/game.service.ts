@@ -17,8 +17,8 @@ export class GameService {
 
     return {
       slots: [
-        { id: 1, name: "", socketId: null, card: card1, score: 0 },
-        { id: 2, name: "", socketId: null, card: card2, score: 0 },
+        { id: 1, name: "", socketId: null, card: card1, score: 0, currentCardMistakes: 0 },
+        { id: 2, name: "", socketId: null, card: card2, score: 0, currentCardMistakes: 0 },
       ],
       commonCard,
       winner: null,
@@ -60,7 +60,10 @@ export class GameService {
     return slot.id;
   }
 
-  handleAnswerAttempt(socketId: string, token: Token): number | null {
+  handleAnswerAttempt(
+    socketId: string,
+    token: Token,
+  ): { slotId: number; correct: boolean } | null {
     const slot = this.getSlotBySocketId(socketId);
     if (!slot || !this.state.isGameActive || this.state.winner) {
       return null;
@@ -68,14 +71,20 @@ export class GameService {
 
     const correctAnswer = findMatchingToken(slot.card, this.state.commonCard);
     if (token !== correctAnswer) {
-      return null;
+      slot.currentCardMistakes += 1;
+      if (slot.currentCardMistakes > 1 && slot.score > 0) {
+        slot.score -= 1;
+      }
+      return { slotId: slot.id, correct: false };
     }
+
+    slot.currentCardMistakes = 0;
 
     slot.score += 1;
 
     if (slot.score >= WIN_SCORE) {
       this.state.winner = slot.id;
-      return slot.id;
+      return { slotId: slot.id, correct: true };
     }
 
     const usedCardIds = this.state.slots.map((s) => s.card.id);
@@ -87,7 +96,7 @@ export class GameService {
     slot.card = newCard;
     this.state.commonCard = oldPlayerCard;
 
-    return slot.id;
+    return { slotId: slot.id, correct: true };
   }
 
   reset(): void {
@@ -131,6 +140,7 @@ export class GameService {
 
     const [newCard] = getRandomCards(1, usedCardIds);
     slot.card = newCard;
+    slot.currentCardMistakes = 0;
 
     return matchingToken;
   }
