@@ -8,13 +8,21 @@
   --animate-shine: shine 3s linear infinite;
   --animate-spin-fun: spin 1s linear infinite;
 
-  /* Custom colors - dark violet theme */
-  --color-fun-pink: #e879f9;
-  --color-fun-purple: #a855f7;
-  --color-fun-blue: #7c3aed;
-  --color-fun-orange: #c084fc;
-  --color-fun-red: #f472b6;
-  --color-fun-teal: #a78bfa;
+  /* Primitives - actual color values */
+  --color-pink-400: #f472b6;
+  --color-fuchsia-400: #e879f9;
+  --color-violet-300: #a78bfa;
+  --color-violet-400: #c084fc;
+  --color-violet-500: #a855f7;
+  --color-violet-600: #7c3aed;
+
+  /* Semantic - how colors are used */
+  --color-primary: var(--color-pink-400);
+  --color-primary-soft: var(--color-violet-400);
+  --color-secondary: var(--color-violet-300);
+  --color-secondary-soft: var(--color-fuchsia-400);
+  --color-accent: var(--color-violet-500);
+  --color-error: var(--color-pink-400);
 
   @keyframes flash {
     50% {
@@ -69,9 +77,9 @@
   background: linear-gradient(
     135deg,
     #fff,
-    var(--color-fun-pink),
-    var(--color-fun-purple),
-    var(--color-fun-pink),
+    var(--color-secondary-soft),
+    var(--color-accent),
+    var(--color-secondary-soft),
     #fff
   );
   background-size: 200% auto;

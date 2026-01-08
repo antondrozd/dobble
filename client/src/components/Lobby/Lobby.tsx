@@ -30,11 +30,11 @@ export default function Lobby() {
       </h1>
 
       {isCreating ? (
-        <div className="w-12 h-12 border-4 border-white/30 border-t-fun-orange border-r-fun-red rounded-full animate-spin-fun" />
+        <div className="w-12 h-12 border-4 border-white/30 border-t-primary-soft border-r-primary rounded-full animate-spin-fun" />
       ) : (
         <div className="flex flex-col items-center gap-6 animate-bounce-in">
           <button
-            className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
+            className="px-8 py-4 bg-linear-to-r from-primary to-primary-soft text-white text-xl font-bold rounded-full shadow-lg shadow-primary/40 hover:scale-105 hover:shadow-primary/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
             onClick={() => void handleCreateGame()}
           >
             Create Game
@@ -48,10 +48,10 @@ export default function Lobby() {
               placeholder="Enter Room ID"
               value={joinRoomId}
               onChange={(e) => setJoinRoomId(e.target.value.trim())}
-              className="px-5 py-3 border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm text-white placeholder-white/60 outline-none focus:border-fun-orange focus:shadow-lg focus:shadow-fun-orange/30 transition-all"
+              className="px-5 py-3 border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm text-white placeholder-white/60 outline-none focus:border-primary-soft focus:shadow-lg focus:shadow-primary-soft/30 transition-all"
             />
             <button
-              className="px-6 py-3 bg-linear-to-r from-fun-teal to-fun-pink text-fun-purple font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 active:scale-95 active:shadow-sm transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-linear-to-r from-secondary to-secondary-soft text-accent font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
               onClick={handleJoinGame}
               disabled={!joinRoomId}
             >

@@ -28,7 +28,7 @@ const PlayerPane = ({
       />
       <button
         onClick={onSkipClick}
-        className="absolute bottom-4 left-4 sm:static flex items-center gap-1 p-2 sm:p-3 rounded-full bg-linear-to-br from-fun-orange to-fun-red shadow-lg shadow-fun-orange/30 hover:scale-110 hover:shadow-fun-orange/50 active:scale-90 active:shadow-sm transition-all"
+        className="absolute bottom-4 left-4 sm:static flex items-center gap-1 p-2 sm:p-3 rounded-full bg-linear-to-br from-primary-soft to-primary shadow-lg shadow-primary-soft/30 hover:scale-110 hover:shadow-primary-soft/50 active:scale-90 active:shadow-sm transition-all"
       >
         Skip <Lightbulb className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
       </button>

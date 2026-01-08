@@ -104,11 +104,11 @@ export default function Room() {
         <h1 className="text-6xl font-black text-gradient drop-shadow-lg">
           Oops!
         </h1>
-        <p className="text-fun-red bg-fun-red/20 px-6 py-3 rounded-full backdrop-blur-sm text-lg">
+        <p className="text-error bg-error/20 px-6 py-3 rounded-full backdrop-blur-sm text-lg">
           {error}
         </p>
         <button
-          className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
+          className="px-8 py-4 bg-linear-to-r from-primary to-primary-soft text-white text-xl font-bold rounded-full shadow-lg shadow-primary/40 hover:scale-105 hover:shadow-primary/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
           onClick={handleBackToLobby}
         >
           Back to Lobby
@@ -125,7 +125,7 @@ export default function Room() {
         </h1>
         <div className="flex flex-col items-center gap-4">
           <p className="text-white/70">Enter name</p>
-          <div className="flex items-center border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm focus-within:border-fun-purple focus-within:shadow-lg focus-within:shadow-fun-purple/30 transition-all">
+          <div className="flex items-center border-2 border-white/30 rounded-full bg-white/10 backdrop-blur-sm focus-within:border-accent focus-within:shadow-lg focus-within:shadow-accent/30 transition-all">
             <input
               type="text"
               placeholder="Your name"
@@ -142,7 +142,7 @@ export default function Room() {
             </button>
           </div>
           <button
-            className="px-8 py-4 bg-linear-to-r from-fun-teal to-fun-pink text-fun-purple text-xl font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+            className="px-8 py-4 bg-linear-to-r from-secondary to-secondary-soft text-accent text-xl font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
             onClick={handleJoin}
             disabled={!name.trim()}
           >
@@ -159,7 +159,7 @@ export default function Room() {
         <h1 className="text-6xl font-black text-gradient drop-shadow-lg animate-pulse-slow">
           Dobble
         </h1>
-        <div className="w-12 h-12 border-4 border-white/30 border-t-fun-orange border-r-fun-red rounded-full animate-spin-fun" />
+        <div className="w-12 h-12 border-4 border-white/30 border-t-primary-soft border-r-primary rounded-full animate-spin-fun" />
         <p className="text-white/60">Connecting...</p>
       </main>
     );
@@ -178,7 +178,7 @@ export default function Room() {
             {roomUrl}
           </code>
           <button
-            className="px-6 py-3 bg-linear-to-r from-fun-teal to-fun-pink text-fun-purple font-bold rounded-full shadow-lg shadow-fun-teal/40 hover:scale-105 hover:shadow-fun-teal/60 active:scale-95 active:shadow-sm transition-all"
+            className="px-6 py-3 bg-linear-to-r from-secondary to-secondary-soft text-accent font-bold rounded-full shadow-lg shadow-secondary/40 hover:scale-105 hover:shadow-secondary/60 active:scale-95 active:shadow-sm transition-all"
             onClick={handleCopyUrl}
           >
             Copy Link
@@ -229,7 +229,7 @@ export default function Room() {
           </div>
         </div>
         <button
-          className="px-8 py-4 bg-linear-to-r from-fun-red to-fun-orange text-white text-xl font-bold rounded-full shadow-lg shadow-fun-red/40 hover:scale-105 hover:shadow-fun-red/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
+          className="px-8 py-4 bg-linear-to-r from-primary to-primary-soft text-white text-xl font-bold rounded-full shadow-lg shadow-primary/40 hover:scale-105 hover:shadow-primary/60 active:scale-95 active:shadow-sm transition-all uppercase tracking-wide"
           onClick={resetGame}
         >
           Play Again
