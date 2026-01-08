@@ -1,4 +1,5 @@
-import { useSocketGame, usePlayerName } from "@/hooks";
+import { useEffect, useRef } from "react";
+import { useSocketGame, usePlayerName, useGameSounds } from "@/hooks";
 import { useParams, useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/utils/cn";
@@ -22,6 +23,64 @@ export default function Room() {
     resetGame,
     handleSkipAnimationComplete,
   } = useSocketGame();
+  const {
+    playSuccess,
+    playError,
+    playSkip,
+    playWin,
+    playLose,
+    playBackground,
+    stopBackground,
+  } = useGameSounds();
+
+  const prevScoreRef = useRef<number | null>(null);
+  const prevWinnerRef = useRef<number | null>(null);
+
+  const yourSlotId = gameState?.yourSlotId;
+  const yourScore = gameState?.slots.find((s) => s.id === yourSlotId)?.score;
+  const winner = gameState?.winner;
+
+  // Play success/error on score change
+  useEffect(() => {
+    if (yourScore === undefined) return;
+
+    if (prevScoreRef.current !== null) {
+      if (yourScore > prevScoreRef.current) {
+        playSuccess();
+      } else if (yourScore < prevScoreRef.current) {
+        playError();
+      }
+    }
+    prevScoreRef.current = yourScore;
+  }, [yourScore, playSuccess, playError]);
+
+  // Play win/lose on game end
+  useEffect(() => {
+    if (!winner || prevWinnerRef.current === winner) return;
+
+    if (winner === yourSlotId) {
+      playWin();
+    } else {
+      playLose();
+    }
+    prevWinnerRef.current = winner;
+  }, [winner, yourSlotId, playWin, playLose]);
+
+  // Background music
+  const isGameActive = gameState?.isGameActive;
+  useEffect(() => {
+    if (isGameActive && !winner) {
+      playBackground();
+    } else {
+      stopBackground();
+    }
+    return () => stopBackground();
+  }, [isGameActive, winner, playBackground, stopBackground]);
+
+  const handleSkip = () => {
+    playSkip();
+    requestSkip();
+  };
 
   const handleJoin = () => {
     if (roomId && name.trim()) {
@@ -129,7 +188,7 @@ export default function Room() {
     );
   }
 
-  const { slots, commonCard, winner, yourSlotId } = gameState;
+  const { slots, commonCard } = gameState;
   const yourSlot = slots.find((s) => s.id === yourSlotId);
   const opponentSlot = slots.find((s) => s.id !== yourSlotId);
 
@@ -194,7 +253,7 @@ export default function Room() {
         card={yourSlot.card}
         hint={hint}
         onTokenClick={submitAnswer}
-        onSkipClick={requestSkip}
+        onSkipClick={handleSkip}
         onHintRevealed={handleSkipAnimationComplete}
       />
       <ScoreBox
