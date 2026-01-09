@@ -7,7 +7,6 @@ on:
     paths:
       - "server/**"
       - "shared/**"
-      - pnpm-lock.yaml
 
 jobs:
   lint:
