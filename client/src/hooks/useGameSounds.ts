@@ -34,10 +34,10 @@ export const useGameSounds = ({
     if (yourScore > prevScore) {
       playSuccess();
     } else if (yourScore < prevScore) {
-      const isReset = yourScore === 0 && !winner;
+      const isReset = prevWinner && !winner;
       if (!isReset) playError();
     }
-  }, [yourScore, prevScore, winner, playSuccess, playError]);
+  }, [yourScore, prevScore, winner, prevWinner, playSuccess, playError]);
 
   useEffect(() => {
     if (!winner || winner === prevWinner) return;
