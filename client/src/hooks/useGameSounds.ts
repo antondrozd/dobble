@@ -1,6 +1,20 @@
+import { useEffect } from "react";
 import useSound from "use-sound";
+import { usePrevious } from "@uidotdev/usehooks";
 
-export const useGameSounds = () => {
+type GameSoundsParams = {
+  yourScore?: number;
+  yourSlotId?: number;
+  winner?: number | null;
+  isGameActive?: boolean;
+};
+
+export const useGameSounds = ({
+  yourScore,
+  yourSlotId,
+  winner,
+  isGameActive,
+}: GameSoundsParams) => {
   const [playSuccess] = useSound("/sounds/success.wav");
   const [playError] = useSound("/sounds/error.wav");
   const [playSkip] = useSound("/sounds/skip.wav");
@@ -11,13 +25,38 @@ export const useGameSounds = () => {
     { volume: 0.3, loop: true }
   );
 
-  return {
-    playSuccess,
-    playError,
-    playSkip,
-    playWin,
-    playLose,
-    playBackground,
-    stopBackground,
-  };
+  const prevScore = usePrevious(yourScore);
+  const prevWinner = usePrevious(winner);
+
+  useEffect(() => {
+    if (prevScore == null || yourScore == null) return;
+
+    if (yourScore > prevScore) {
+      playSuccess();
+    } else if (yourScore < prevScore) {
+      const isReset = yourScore === 0 && !winner;
+      if (!isReset) playError();
+    }
+  }, [yourScore, prevScore, winner, playSuccess, playError]);
+
+  useEffect(() => {
+    if (!winner || winner === prevWinner) return;
+
+    if (winner === yourSlotId) {
+      playWin();
+    } else {
+      playLose();
+    }
+  }, [winner, prevWinner, yourSlotId, playWin, playLose]);
+
+  useEffect(() => {
+    if (isGameActive && !winner) {
+      playBackground();
+    } else {
+      stopBackground();
+    }
+    return () => stopBackground();
+  }, [isGameActive, winner, playBackground, stopBackground]);
+
+  return { playSkip };
 };

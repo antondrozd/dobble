@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useSocketGame, usePlayer, useGameSounds } from "@/hooks";
 import { useParams, useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
@@ -23,23 +23,18 @@ export default function Room() {
     resetGame,
     handleSkipAnimationComplete,
   } = useSocketGame();
-  const {
-    playSuccess,
-    playError,
-    playSkip,
-    playWin,
-    playLose,
-    playBackground,
-    stopBackground,
-  } = useGameSounds();
-
-  const prevScoreRef = useRef<number | null>(null);
-  const prevWinnerRef = useRef<number | null>(null);
 
   const yourSlotId = gameState?.yourSlotId;
   const yourScore = gameState?.slots.find((s) => s.id === yourSlotId)?.score;
   const winner = gameState?.winner;
   const isGameActive = gameState?.isGameActive;
+
+  const { playSkip } = useGameSounds({
+    yourScore,
+    yourSlotId,
+    winner,
+    isGameActive,
+  });
 
   // Auto-rejoin on page refresh if player has stored ID
   useEffect(() => {
@@ -48,39 +43,6 @@ export default function Room() {
 
     void connect(roomId);
   }, [status, roomId, playerId, connect]);
-
-  useEffect(() => {
-    if (yourScore === undefined) return;
-
-    if (prevScoreRef.current !== null) {
-      if (yourScore > prevScoreRef.current) {
-        playSuccess();
-      } else if (yourScore < prevScoreRef.current) {
-        playError();
-      }
-    }
-    prevScoreRef.current = yourScore;
-  }, [yourScore, playSuccess, playError]);
-
-  useEffect(() => {
-    if (!winner || prevWinnerRef.current === winner) return;
-
-    if (winner === yourSlotId) {
-      playWin();
-    } else {
-      playLose();
-    }
-    prevWinnerRef.current = winner;
-  }, [winner, yourSlotId, playWin, playLose]);
-
-  useEffect(() => {
-    if (isGameActive && !winner) {
-      playBackground();
-    } else {
-      stopBackground();
-    }
-    return () => stopBackground();
-  }, [isGameActive, winner, playBackground, stopBackground]);
 
   const handleSkip = () => {
     playSkip();

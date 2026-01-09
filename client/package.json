@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@dobble/shared": "workspace:*",
+    "@uidotdev/usehooks": "^2.4.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
     "ramda": "^0.29.1",
