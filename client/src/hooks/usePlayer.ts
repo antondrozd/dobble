@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import {
   uniqueNamesGenerator,
   adjectives,
@@ -30,6 +30,6 @@ export const usePlayer = create<PlayerStore>()(
       setName: (name) => set({ name }),
       regenerateName: () => set({ name: generateName() }),
     }),
-    { name: "player", storage: createJSONStorage(() => sessionStorage) }
+    { name: "player" }
   )
 );
