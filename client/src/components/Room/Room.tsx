@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSocketGame, usePlayer, useGameSounds } from "@/hooks";
 import { useParams, useNavigate } from "react-router-dom";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/utils/cn";
 import PlayerPane from "../PlayerPane";
 import OpponentCard from "../OpponentCard";
@@ -29,7 +29,7 @@ export default function Room() {
   const winner = gameState?.winner;
   const isGameActive = gameState?.isGameActive;
 
-  const { playSkip } = useGameSounds({
+  const { playSkip, isMusicEnabled, toggleMusic } = useGameSounds({
     yourScore,
     yourSlotId,
     winner,
@@ -207,6 +207,17 @@ export default function Room() {
 
   return (
     <main className="relative flex flex-col items-center justify-center gap-4 h-dvh p-[2dvh] box-border overflow-hidden">
+      <button
+        onClick={toggleMusic}
+        className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all"
+        title={isMusicEnabled ? "Mute music" : "Unmute music"}
+      >
+        {isMusicEnabled ? (
+          <Volume2 className="w-5 h-5 text-white" />
+        ) : (
+          <VolumeX className="w-5 h-5 text-white/50" />
+        )}
+      </button>
       {opponentSlot && (
         <ScoreBox
           name={opponentSlot.player.name}

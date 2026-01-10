@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useSound from "use-sound";
 import { usePrevious } from "@uidotdev/usehooks";
 
@@ -25,6 +25,10 @@ export const useGameSounds = ({
     { volume: 0.3, loop: true }
   );
 
+  const [isMusicEnabled, setIsMusicEnabled] = useState(true);
+
+  const toggleMusic = () => setIsMusicEnabled((prev) => !prev);
+
   const prevScore = usePrevious(yourScore);
   const prevWinner = usePrevious(winner);
 
@@ -50,13 +54,13 @@ export const useGameSounds = ({
   }, [winner, prevWinner, yourSlotId, playWin, playLose]);
 
   useEffect(() => {
-    if (isGameActive && !winner) {
-      playBackground();
-    } else {
-      stopBackground();
-    }
-    return () => stopBackground();
-  }, [isGameActive, winner, playBackground, stopBackground]);
+    if (!isMusicEnabled) return;
+    if (!isGameActive) return;
+    if (winner) return;
 
-  return { playSkip };
+    playBackground();
+    return () => stopBackground();
+  }, [isGameActive, winner, isMusicEnabled, playBackground, stopBackground]);
+
+  return { playSkip, isMusicEnabled, toggleMusic };
 };
