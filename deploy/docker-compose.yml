@@ -1,0 +1,15 @@
+# Ports bind to 127.0.0.1 only: cloudflared (host systemd) reaches them via localhost,
+# and the LAN cannot. If cloudflared runs in a container, switch to 0.0.0.0 or share a network.
+
+services:
+  client:
+    image: ghcr.io/antondrozd/dobble/client:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3002:3002"
+
+  server:
+    image: ghcr.io/antondrozd/dobble/server:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3001"

@@ -34,6 +34,6 @@ RUN npm install -g serve
 WORKDIR /app
 COPY --from=builder /app/client/dist ./dist
 
-ENV PORT=5173
+ENV PORT=3002
 
 CMD ["sh", "-c", "serve -s dist -l $PORT"]

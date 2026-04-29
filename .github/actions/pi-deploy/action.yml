@@ -1,0 +1,54 @@
+name: Pi Deploy
+description: Pull and recreate a docker-compose service on the Raspberry Pi over an SSH-via-Cloudflare-tunnel connection.
+
+inputs:
+  service:
+    description: docker-compose service name to redeploy (e.g. client, server).
+    required: true
+  host:
+    description: Cloudflare-protected SSH hostname routed to the Pi.
+    required: true
+  user:
+    description: SSH username on the Pi.
+    required: true
+  ssh-private-key:
+    description: Private SSH key authorized for the Pi user.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install cloudflared
+      shell: bash
+      run: |
+        curl -L --fail --output cloudflared.deb \
+          https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        sudo dpkg -i cloudflared.deb
+
+    - name: Configure SSH
+      shell: bash
+      env:
+        SSH_PRIVATE_KEY: ${{ inputs.ssh-private-key }}
+        SSH_HOST: ${{ inputs.host }}
+        SSH_USER: ${{ inputs.user }}
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/dobble_ci
+        chmod 600 ~/.ssh/dobble_ci
+        cat > ~/.ssh/config <<EOF
+        Host $SSH_HOST
+          User $SSH_USER
+          IdentityFile ~/.ssh/dobble_ci
+          ProxyCommand cloudflared access ssh --hostname %h
+          StrictHostKeyChecking accept-new
+        EOF
+
+    - name: Redeploy ${{ inputs.service }} on Raspberry Pi
+      shell: bash
+      env:
+        SSH_HOST: ${{ inputs.host }}
+        SERVICE: ${{ inputs.service }}
+      run: |
+        ssh "$SSH_HOST" "docker compose -p dobble -f - up -d --pull always $SERVICE && docker image prune -f" \
+          < "$GITHUB_WORKSPACE/deploy/docker-compose.yml"
